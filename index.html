@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radar de Redes · Ticketeras</title>
+<meta name="description" content="Dashboard de redes sociales de Joinnus vs. ticketeras peruanas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#0b3550; --bg2:#081b2c; --bg3:#06131f;
+  --card:rgba(16,38,58,.72); --card2:#112a40; --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+  --ink:#f3f7fa; --ink2:#b9c7d3; --muted:#7f93a5;
+  --brand:#1EE3A3; --brand-ink:#04281c;
+  --track:rgba(255,255,255,.07);
+  /* color por ticketera (validado CVD sobre superficie oscura) */
+  --c-joinnus:#00AD7C; --c-teleticket:#E8573A; --c-ticketmaster:#4A80F0; --c-vaope:#C08A00; --c-passline:#9466EC; --c-blicket:#D94C93; --c-otra:#7f93a5;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Poppins,system-ui,sans-serif;color:var(--ink);background:var(--bg3);
+  background-image:radial-gradient(1200px 600px at 0% 0%,var(--bg1),transparent 60%),linear-gradient(180deg,var(--bg2),var(--bg3));
+  background-attachment:fixed;min-height:100vh;font-size:14px;line-height:1.45}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:24px 16px 64px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:17px}
+.logo .mark{width:36px;height:36px;border-radius:50%;background:#0a0f14;display:grid;place-items:center;color:var(--brand);font-weight:800;font-size:14px;letter-spacing:-1px}
+.status{display:flex;align-items:center;gap:12px;color:var(--ink2);font-size:13px;flex-wrap:wrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block;margin-right:6px}
+.dot.live{background:var(--brand);box-shadow:0 0 0 4px rgba(30,227,163,.18)}
+.btn{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10px 20px;background:var(--brand);color:var(--brand-ink);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line2);font-weight:500;padding:8px 14px}
+.btn:focus-visible,.chip:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+h1{max-width:820px;font-size:clamp(30px,5vw,52px);line-height:1.08;margin:28px 0 12px;font-weight:800;letter-spacing:-1px}
+h1 em{font-style:normal;color:var(--brand)}
+.lead{color:var(--ink2);font-size:16px;max-width:760px;margin:0 0 24px}
+.lead b{color:var(--ink)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;backdrop-filter:blur(6px)}
+.filters{display:flex;flex-direction:column;gap:12px;position:sticky;top:8px;z-index:20;background:rgba(10,30,46,.92)}
+.frow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.flabel{color:var(--muted);font-size:12px;min-width:74px}
+.chip{font:inherit;font-size:13px;font-weight:500;border:1px solid var(--line2);background:transparent;color:var(--ink);border-radius:999px;padding:7px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.chip[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:600}
+.chip .sw{width:10px;height:10px;border-radius:3px}
+.chip.ent[aria-pressed="true"]{background:rgba(255,255,255,.1);color:var(--ink);border-color:var(--ink2)}
+.chip.ent[aria-pressed="false"]{opacity:.45}
+.chip.ent[aria-pressed="false"] .sw{background:transparent!important;border:1px solid var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:28px 0}
+.kpi .v{font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-.5px;line-height:1.1}
+.kpi .v.accent{color:var(--brand)}
+.kpi .l{color:var(--ink2);font-size:14px}
+.kpi .s{color:var(--muted);font-size:12px}
+section{margin-top:28px}
+h2{font-size:22px;margin:0 0 4px;font-weight:700}
+.sub{color:var(--ink2);margin:0 0 16px;font-size:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;min-width:0}
+.card h3{margin:0 0 2px;font-size:16px;font-weight:600;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.card h3 small{color:var(--muted);font-weight:400;font-size:12px}
+.card .sub{margin-bottom:12px}
+/* barras */
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:minmax(110px,150px) 1fr minmax(84px,auto);gap:12px;align-items:center;cursor:default;border-radius:8px;padding:2px 4px;margin:0 -4px}
+.bar:hover{background:rgba(255,255,255,.04)}
+.bar .n{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:8px}
+.bar .n .sw{width:10px;height:10px;border-radius:3px;flex:none}
+.bar.me .n{font-weight:700}
+.bar .t{height:10px;background:var(--track);border-radius:4px;overflow:hidden}
+.bar .f{height:100%;border-radius:0 4px 4px 0;min-width:2px;transition:width .4s ease}
+.bar .val{text-align:right;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar .val b{font-weight:700}
+.bar .val span{color:var(--muted)}
+.empty{color:var(--muted);font-size:13px;padding:8px 0}
+/* tablas */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:500;font-size:12px;cursor:pointer;user-select:none}
+th:first-child,td:first-child{text-align:left}
+#raw td:nth-child(2),#raw td:nth-child(3),#raw th:nth-child(2),#raw th:nth-child(3){text-align:left}
+tr.me td{font-weight:600;background:rgba(30,227,163,.05)}
+td .sw{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:8px;vertical-align:middle}
+.pos{color:#4fd8a6}.neg{color:#ff8f78}
+/* comparador */
+.vs{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+select,input[type=search]{font:inherit;font-size:13px;background:#0d2334;color:var(--ink);border:1px solid var(--line2);border-radius:12px;padding:9px 12px}
+input[type=search]{flex:1;min-width:200px;border-radius:999px;padding:10px 16px}
+.duel{display:flex;flex-direction:column;gap:14px}
+.duel .row .lbl{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);margin-bottom:6px}
+.duel .row .lbl b{color:var(--ink)}
+.split{display:flex;height:12px;gap:2px;border-radius:4px;overflow:hidden}
+.split div{height:100%;transition:width .4s}
+.winner{font-size:12px;color:var(--muted)}
+/* heatmap campañas */
+.heat td.c{cursor:pointer;text-align:center;font-weight:600;border:2px solid transparent}
+.heat td.c:hover{border-color:var(--ink2)}
+.heat td.c.sel{border-color:var(--brand)}
+.heat th{text-align:center}
+.heat th:first-child{text-align:left}
+/* feed */
+.feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.post{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.post .hd{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink2);align-items:center}
+.post .hd b{color:var(--ink);font-weight:600;display:flex;align-items:center;gap:6px}
+.post .tx{font-size:13px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.post .mt{display:flex;gap:14px;font-size:13px;font-variant-numeric:tabular-nums;align-items:center;flex-wrap:wrap}
+.post .mt b{font-weight:700}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:11px;border-radius:999px;padding:3px 9px;background:rgba(255,255,255,.07);color:var(--ink2)}
+.tag.cta{background:rgba(30,227,163,.13);color:#7ff0c8}
+.tag.promo{background:rgba(255,200,61,.13);color:#ffd877}
+.tag.urg{background:rgba(255,120,90,.14);color:#ffaa95}
+.post a.go{font-size:12px;color:var(--brand);text-decoration:none;margin-top:auto}
+.post a.go:hover{text-decoration:underline}
+.fresh{font-size:11px;color:var(--muted)}
+/* tooltip */
+#tip{position:fixed;pointer-events:none;background:#04121d;border:1px solid var(--line2);color:var(--ink);padding:8px 10px;border-radius:10px;font-size:12px;z-index:100;opacity:0;transition:opacity .12s;max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+#tip b{font-weight:700}
+#tip .m{color:var(--muted)}
+.note{font-size:12px;color:var(--muted);margin-top:10px}
+.callout{border-left:3px solid var(--brand);padding:10px 14px;background:rgba(30,227,163,.06);border-radius:0 12px 12px 0;color:var(--ink2);font-size:13px}
+.callout b{color:var(--ink)}
+.insights{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ins{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:13px;color:var(--ink2)}
+.ins .k{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--brand);font-weight:600;margin-bottom:4px}
+.ins b{color:var(--ink)}
+svg text{font-family:Poppins,system-ui,sans-serif}
+footer{margin-top:40px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:18px}
+footer b{color:var(--ink2)}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:999px;overflow:hidden}
+.seg button{font:inherit;font-size:12px;border:0;background:transparent;color:var(--ink2);padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:rgba(255,255,255,.12);color:var(--ink);font-weight:600}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2,.grid4,.insights{grid-template-columns:1fr}.filters{position:static}}
+@media (max-width:520px){.bar{grid-template-columns:96px 1fr auto;gap:8px}.flabel{min-width:100%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo"><span class="mark" aria-hidden="true">JN</span> Joinnus · Radar de Redes</div>
+    <div class="status">
+      <span id="srcLabel"><span class="dot"></span>Cargando…</span>
+      <span id="ago"></span>
+      <button class="btn" id="refresh">Actualizar</button>
+    </div>
+  </header>
+
+  <h1>¿Cómo va Joinnus en redes frente a <em>las otras ticketeras?</em></h1>
+  <p class="lead" id="lead">Cargando datos…</p>
+
+  <div class="panel filters" role="region" aria-label="Filtros">
+    <div class="frow"><span class="flabel">Ticketeras</span><div class="frow" id="fEnt"></div></div>
+    <div class="frow"><span class="flabel">Red social</span><div class="frow" id="fNet"></div></div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section>
+    <h2>Seguidores por red</h2>
+    <p class="sub">Comparación directa en cada plataforma. Pasa el cursor por una barra para ver el detalle.</p>
+    <div class="grid4" id="netCards"></div>
+  </section>
+
+  <section>
+    <div class="grid2">
+      <div class="card">
+        <h3>Audiencia total <small>suma de las redes filtradas</small></h3>
+        <p class="sub">Share = % de la audiencia combinada de las ticketeras seleccionadas.</p>
+        <div class="bars" id="totalBars"></div>
+      </div>
+      <div class="card">
+        <h3>Mix de audiencia <small>dónde está la comunidad de cada una</small></h3>
+        <p class="sub">% de seguidores de cada ticketera por red.</p>
+        <div id="mix"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Comparador cara a cara</h2>
+    <p class="sub">Elige dos o tres ticketeras y compara red por red.</p>
+    <div class="card">
+      <div class="vs">
+        <select id="cmpA" aria-label="Ticketera A"></select>
+        <span style="color:var(--muted)">vs</span>
+        <select id="cmpB" aria-label="Ticketera B"></select>
+        <span style="color:var(--muted)">vs</span>
+        <select id="cmpC" aria-label="Ticketera C (opcional)"></select>
+        <button class="btn ghost" data-exp="Comparador" style="margin-left:auto">Exportar comparador (CSV)</button>
+      </div>
+      <div class="duel" id="duel"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Social selling</h2>
+    <p class="sub">Qué tan bien venden desde el contenido: interacción por post, llamadas a comprar, promos y urgencia. Basado en los posts recientes de Instagram cargados + métricas de comunidad en TikTok y Facebook.</p>
+    <div class="insights" id="insights"></div>
+    <div class="card" style="margin-top:16px">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:6px"><button class="btn ghost" data-exp="Social selling">Exportar (CSV)</button></div>
+      <h3>Indicadores por ticketera <small><label style="cursor:pointer"><input type="checkbox" id="freshChk" checked> incluir posts de menos de 48 h</label> · clic en una columna para ordenar</small></h3>
+      <div class="tbl-wrap"><table id="ssTable"></table></div>
+      <p class="note">
+        <b>Interacción mediana</b> = likes + comentarios del post típico (la mediana evita que un post viral distorsione).
+        <b>ER</b> = interacción ÷ seguidores de Instagram.
+        <b>% con CTA</b> = posts que invitan a comprar (“entradas en…”, “compra tus entradas”, link).
+        <b>Hablando de esto</b> = métrica pública de Facebook de personas interactuando con la página (últimos 7 días) ÷ seguidores.
+        Posts de menos de 48 h todavía están sumando interacciones.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Campañas detectadas</h2>
+    <p class="sub">Los posts se agrupan automáticamente por palabras clave y hashtags. Haz clic en una celda para ver esos posts abajo.</p>
+    <div class="card">
+      <div class="tbl-wrap"><table class="heat" id="heat"></table></div>
+      <div style="margin-top:14px"><div class="frow"><span class="flabel">Hashtags</span><div class="tags" id="hashtags"></div></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Posts</h2>
+    <p class="sub" id="feedSub"></p>
+    <div class="frow" style="margin-bottom:14px">
+      <input type="search" id="q" placeholder="Buscar en posts: artista, campaña, palabra…" aria-label="Buscar en posts">
+      <select id="campSel" aria-label="Filtrar por campaña"></select>
+      <div class="seg" role="group" aria-label="Ordenar posts">
+        <button data-sort="inter" aria-pressed="true">Más interacción</button>
+        <button data-sort="date" aria-pressed="false">Más recientes</button>
+      </div>
+    </div>
+    <div class="feed" id="feed"></div>
+  </section>
+
+  <section>
+    <h2>Evolución de seguidores</h2>
+    <p class="sub">Cada vez que el equipo agrega una nueva fecha en la hoja “cuentas”, aquí aparece la tendencia.</p>
+    <div class="card">
+      <div class="frow" style="margin-bottom:10px"><span class="flabel">Red</span><div class="seg" id="histNet" role="group" aria-label="Red del historial"></div></div>
+      <div id="hist"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tabla de datos</h2>
+    <p class="sub">Todas las cuentas con el último dato disponible. Las descargas respetan los filtros de ticketeras y red.</p>
+    <div class="frow" style="margin-bottom:14px">
+      <button class="btn" id="xlsx">Descargar Excel (todas las hojas)</button>
+      <button class="btn ghost" data-exp="Cuentas">CSV · Cuentas</button>
+      <button class="btn ghost" data-exp="Historial">CSV · Historial</button>
+      <button class="btn ghost" data-exp="Posts">CSV · Posts</button>
+      <button class="btn ghost" data-exp="Social selling">CSV · Social selling</button>
+      <button class="btn ghost" data-exp="Campañas">CSV · Campañas</button>
+      <button class="btn ghost" data-exp="Comparador">CSV · Comparador</button>
+    </div>
+    <div class="card"><div class="tbl-wrap"><table id="raw"></table></div></div>
+  </section>
+
+  <footer>
+    <p><b>Fuente:</b> datos públicos visibles en los perfiles de Instagram, TikTok, Facebook y YouTube de cada ticketera (seguidores, publicaciones, likes y comentarios de posts recientes). Instagram muestra los seguidores redondeados (ej. 556K). No se usan datos privados ni de pauta.</p>
+    <p><b>Actualización:</b> el dashboard lee el Google Sheet configurado cada vez que se abre y cada 5 minutos. Para sumar datos, agrega filas en las hojas “cuentas” y “posts” con la fecha del día.</p>
+    <p><b>Campañas:</b> clasificación automática por palabras clave; revisar casos dudosos.</p>
+  </footer>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<!-- Datos de respaldo (snapshot). Se usan si no hay Google Sheet configurado ni archivos /data. -->
+<script type="text/csv" id="seed-cuentas">fecha,ticketera,red,usuario,url,seguidores,publicaciones,me_gusta_totales,hablando_de_esto
+2026-10-27,Joinnus,Instagram,@joinnus,https://www.instagram.com/joinnus/,556000,9988,,
+2026-10-27,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,166300,1631,2000000,
+2026-10-27,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353267,,,5675
+2026-10-27,Joinnus,YouTube,@joinnus,https://www.youtube.com/@joinnus,8110,1790,,
+2026-10-27,Teleticket,Instagram,@teleticket.oficial,https://www.instagram.com/teleticket.oficial/,687000,12000,,
+2026-10-27,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279600,1012,4700000,
+2026-10-27,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,724808,,,24836
+2026-10-27,Ticketmaster Perú,Instagram,@ticketmasterpe,https://www.instagram.com/ticketmasterpe/,231000,8676,,
+2026-10-27,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,100300,1082,1900000,
+2026-10-27,Ticketmaster Perú,Facebook,TicketmasterPE,https://www.facebook.com/TicketmasterPE,73634,,,11254
+2026-10-27,Ticketmaster Perú,YouTube,@TicketmasterPE,https://www.youtube.com/@TicketmasterPE,1340,103,,
+2026-10-27,Vaope,Instagram,@vaope.oficial,https://www.instagram.com/vaope.oficial/,69000,17000,,
+2026-10-27,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,468000,14600,9700000,
+2026-10-27,Vaope,Facebook,Vaopeee,https://www.facebook.com/Vaopeee/,318417,,,26127
+2026-10-27,Vaope,YouTube,@vaope.oficial,https://www.youtube.com/@vaope.oficial,540,70,,
+2026-10-27,Passline Perú,Instagram,@passline.pe,https://www.instagram.com/passline.pe/,43000,3107,,
+2026-10-27,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3014,204,24400,
+2026-10-27,Passline Perú,Facebook,passline.pe,https://www.facebook.com/passline.pe,1313,,,125
+2026-10-27,Blicket,Instagram,@blicket.events,https://www.instagram.com/blicket.events/,16000,238,,
+2026-10-27,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1631,135,65900,
+2026-10-27,Blicket,Facebook,blicket.events,https://www.facebook.com/blicket.events,1005,,,28
+</script>
+<script type="text/csv" id="seed-posts">fecha,ticketera,red,url,tipo,likes,comentarios,texto,imagen
+2026-10-27,Joinnus,Web / multicanal,https://www.joinnus.com,Campaña (manual),,,"SORTEO OCTUBRE · Este octubre gánate un iPhone 18 Pro Max 512 GB o un Segway MAX G3. Y si compras entradas, duplicas tus opciones. S/3.90 por opción. ¡Participa ahora! *Aplican T&Cs. Ver en BlogJoinnus.",assets/sorteo-octubre-joinnus.jpg
+2026-10-26,Joinnus,Instagram,https://www.instagram.com/joinnus/p/De93WTnGx5O/,Post,14,0,"Esta semana nos despedimos de octubre y hay conciertos, teatro, fiestas… ahora solo falta elegir el tuyo 😎 ¿A qué plan te sumas? 🎟️ Entradas en Joinnus.com",
+2026-10-01,Joinnus,Instagram,https://www.instagram.com/joinnus/p/Dd9xS8MHyLk/,Post,86,7,"Comenzó octubreeee, mes de muchas celebraciones, y estos son los planes: hay conciertos, teatro, fiestas… ahora solo falta elegir 💜🎃✨ ¿A qué plan te sumas?",
+2026-10-26,Joinnus,Instagram,https://www.instagram.com/joinnus/reel/De-hkCKFCV7/,Reel,2,0,"💀 ¿Listo para un Halloween salvaje? Disfruta de la mejor noche del año con barra libre de Flor de Caña, Jägermeister, Johnnie Walker y Cartavio. 📍 Calle Berlín 231, Miraflores 🎟 Entradas en Joinnus.com",
+2026-10-26,Joinnus,Instagram,https://www.instagram.com/joinnus/p/De-QgdMGJ-2/,Post,3,0,"¿Eres del team disfraz o del team cajón y guitarra? Estos son los eventos que tenemos para ti, para que tengas un planazo en este mes de mucha celebración 🎃🎸🔥 🎟️Entradas en Joinnus.com",
+2026-10-26,Joinnus,Instagram,https://www.instagram.com/joinnus/reel/De9_YPyilCF/,Reel,2,0,"🎭 ¡Celebremos nuestra identidad y buena música! La Municipalidad de Lima te invita a ""A Jaranear en el Segura"", un concierto especial este 31 de octubre para disfrutar de inolvidables clásicos junto a Los Kipus…",
+2026-10-25,Joinnus,Instagram,https://www.instagram.com/joinnus/reel/De7hR5xidqO/,Reel,119,0,💍✨ ¡LA VERDADERA JUERGA DE UN FALSO MATRIMONIO LLEGA A BARRANCO! 🎉 📅 27 de Oct 📍 C.C. Bianca (Barranco) ⭐ Última función 🎟️Entradas en Joinnus.com,
+2026-10-25,Joinnus,Instagram,https://www.instagram.com/joinnus/reel/De7Wy1-ksRS/,Reel,292,1,🔥🎺 POV: Estás en el Gran Teatro UPAO disfrutando a Tony Succar & Mimy Succar en vivo 💃🏻🥁 ¡Trujillo se viste de gala! … este 31 de octubre. Un concierto imperdible!,
+2026-10-25,Joinnus,Instagram,https://www.instagram.com/joinnus/reel/De7MzBjCVep/,Reel,194,6,"🎸✨ ¡LIMA, PREPÁRATE PARA CANTAR A TODO PULMÓN! La banda colombiana TIMØ llega a Lima este 8 de Noviembre 📍 Centro de Convenciones Barranco 🎟️ Entradas en Joinnus.com",
+2026-10-24,Joinnus,Instagram,https://www.instagram.com/joinnus/reel/De5DWUjih5f/,Reel,23,2,🔥 Así se vivió la Sugoi Party en Le Paris 🍾⚡ Quédate atento para la nueva edición que se viene 🤩,
+2026-10-24,Joinnus,Instagram,https://www.instagram.com/joinnus/reel/De4yFNyE1mw/,Reel,202,1,"POV: Estás caminando dentro de una pintura de Van Gogh, Monet y Da Vinci. Llega a Lima la exposición inmersiva Genios del Arte: The Experience…",
+2026-10-24,Joinnus,Instagram,https://www.instagram.com/joinnus/p/De4oKs8EvKH/,Post,42,0,"¿Eres del team disfraz o del team cajón y guitarra? Estos son los eventos que tenemos para ti, para que tengas un planazo en este mes de mucha celebración 🎟️ Entradas en Joinnus.com",
+2026-10-26,Teleticket,Instagram,https://www.instagram.com/teleticket.oficial/reel/De-d2BsDJh4/,Reel,124,3,"💘 ¡Lima se prepara para cantar a todo pulmón con Jesse & Joy! Prepárate para una noche llena de emociones, recuerdos y esas canciones que llegan directo al corazón…",
+2026-10-26,Teleticket,Instagram,https://www.instagram.com/teleticket.oficial/p/De9oiRiDlMT/,Post,1166,24,"✨ ¿Qué tenemos esta semana? ¡CONCIERTOS QUE NO TE PUEDES PERDER! 🔥 De los temazos que cantamos a todo pulmón al perreo que no puede faltar, esta semana se viene con todo…",
+2026-10-25,Teleticket,Instagram,https://www.instagram.com/teleticket.oficial/p/De7hGAuigEX/,Post,970,7,🎃👻 ¿Ya aprovechaste los descuentos del Ticketween? ⏰ ¡Estamos en las últimas horas! … este es tu último llamado para conseguir tus entradas con descuento,
+2026-10-25,Teleticket,Instagram,https://www.instagram.com/teleticket.oficial/reel/De7MhYdm9rP/,Reel,106,0,😂🎃 ¡Un cumple para no parar de reír! Celebra el cumpleaños de Yaco y el Loco … y aprovecha el 20% de descuento con TICKETWEEN. ⏳ ¡Últimas horas!,
+2026-10-25,Teleticket,Instagram,https://www.instagram.com/teleticket.oficial/p/De6-uRkDbui/,Post,447,0,"🎃🎭 ¡Este TICKETWEEN, los mejores planes vienen con promos! 👻🔥 … 🗓️ Del 21 al 25 de octubre, aprovecha los descuentos",
+2026-10-25,Teleticket,Instagram,https://www.instagram.com/teleticket.oficial/p/De630bqDewi/,Post,444,2,🎃👻 ¡ÚLTIMAS HORAS DE TICKETWEEN! ⏳ Los descuentos están por desaparecer y esta es tu última oportunidad … 🎫 Encuentra tu próximo plan,
+2026-10-24,Teleticket,Instagram,https://www.instagram.com/teleticket.oficial/reel/De5z3JXOf1y/,Reel,1154,11,🥹❤️ Río Roma haciendo suyo unos clásicos… ¡y nosotros sin estar preparados para tanto! ¿Quién más quedó enamorado? 💘,
+2026-10-24,Teleticket,Instagram,https://www.instagram.com/teleticket.oficial/reel/De5srNAx20E/,Reel,1097,5,"Si te dedican Por eso te amo, ¿qué más necesitas para enamorarte? 💘 Río Roma sabe cómo llegar directo al corazón ✨",
+2026-10-01,Ticketmaster Perú,Instagram,https://www.instagram.com/ticketmasterpe/p/Dd9Wt_PjY4y/,Post,314,43,"Octubre llegó y tu agenda está a punto de llenarse 👀 Conciertos, teatro y experiencias para empezar el mes … 👉 Descubre nuestros próximos eventos y cuéntanos: ¿Cuál ya t…",
+2026-10-01,Ticketmaster Perú,Instagram,https://www.instagram.com/ticketmasterpe/p/Dd9Xai8DfIS/,Post,198,3,Octubre se pone de terror… pero por la cantidad de planes que tenemos 👻 La segunda mitad del mes llega con experiencias para … celebrar Halloween como se debe 🎃,
+2026-10-01,Ticketmaster Perú,Instagram,https://www.instagram.com/ticketmasterpe/p/Dd9YWSHDTBI/,Post,69,3,"Octubre tiene un plan para cada tipo de fan ✨ Conciertos, teatro, experiencias … Elige tus favoritos y prepárate para vivir un mes de terror… pero de diversión",
+2026-10-25,Ticketmaster Perú,Instagram,https://www.instagram.com/ticketmasterpe/p/De7RblyF7hh/,Post,13,0,"¡El criollismo pone el sentimiento y la salsa pone el sabor! 🔥 Prepárate para una noche de música, baile y grandes emociones junto a Manuel Donayre y Wilmer Cartagena…",
+2026-10-25,Ticketmaster Perú,Instagram,https://www.instagram.com/ticketmasterpe/p/De6_PD6FwFm/,Post,34,0,Dos íconos. Una noche. Todas esas canciones que nunca dejamos de bailar ❤️‍🔥 Olga Tañón y Tito El Bambino llegan a Lima…,
+2026-10-24,Ticketmaster Perú,Instagram,https://www.instagram.com/ticketmasterpe/reel/De5eSrZtFKv/,Reel,990,5,Gracias #FestiUSIL por permitirnos ser parte de esta gran celebración por su 30 Aniversario 😎🙌,
+2026-10-24,Ticketmaster Perú,Instagram,https://www.instagram.com/ticketmasterpe/p/De5N5j7EQib/,Post,495,2,"✨ ¡Nos llevamos los mejores recuerdos en el FESTIUSIL! 📸 Sonrisas, poses y mucha diversión en nuestra cabina de fotos de Ticketmaster 💙",
+2026-10-24,Ticketmaster Perú,Instagram,https://www.instagram.com/ticketmasterpe/p/De5DGX6l_Z9/,Post,22,0,"Hay tradiciones que nos unen … El Perú en un Solo Canto reúne música, danza y emoción en un espectáculo que celebra la riqueza…",
+2026-10-23,Ticketmaster Perú,Instagram,https://www.instagram.com/ticketmasterpe/p/De4nsNUkWwC/,Post,113,1,"¡10 grandes artistas, una sola pasión y miles de razones para celebrar lo nuestro! ❤️ La 9.ª edición del Festival Andino Latinoamericano nos reúne una vez más…",
+2026-10-24,Ticketmaster Perú,Instagram,https://www.instagram.com/ticketmasterpe/reel/De4URT9H3SO/,Reel,23,2,"Conversamos con Flavio López, de Elefante, sobre los 30 años de historia de una banda … y todo lo que se viene en su esperado regreso a Lima 🤩",
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De-KfBpSlZf/,Post,11,0,📱🚨 ATENCIÓN GENTE: ¡TÚ PODRÍAS SER UNO DE LOS GANADORES DEL IPHONE 18 PRO! 🤩🎉 Este 23 de diciembre sortearemos un increíble iPhone 18 Pro…,
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De93YX_Ggmq/,Post,9,0,"🎃 ¡Las mejores juergas de Halloween llegaron a Vao'Ween! 🔥 Prepárate para gozar, bailar y celebrar junto a tus artistas favoritos 💃 🎟️ Compra tus entradas",
+2026-10-20,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/DeuZLUcSkNj/,Post,102,1,¡TRUJILLO VIBRARÁ EN UN DUELO CLAVE POR EL TÍTULO DEL CLAUSURA! 💥 ¡Los albos quieren bajarse a los cremas! Este 01 de noviembre…,
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De-Z2jXSePJ/,Post,28,0,"🤩🎉 ¡Comas gozará con la Trilogía Norteña! Este 08 de noviembre, la juerga llega a @elremansoperu junto a @orquestacaribenosdeguadalupe…",
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De-WIXVyewh/,Post,6,0,"🎃 ¡Este 31 de octubre, disfruta del Halloween juerguero junto a #dilbertaguilar y muchos invitados más! 🎟️ Compra tus entradas: 🌐 Online en VAOPE.COM 🏪 Venta presencial",
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De-WGPDGsa5/,Post,0,0,"🤩🎉 ¡SJL gozará con la Noche de Halloween! Este 31 de octubre, la juerga llega a El Crucero del Amor junto a @zafiro_sensual_, @amor_paisano…",
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De-T09zGgRi/,Post,15,0,🔥 ¡TRUJILLO VA A EXPLOTAR! GRAU VS LA 'U' - EL PARTIDAZO QUE PUEDE DEFINIR EL CLAUSURA 💛🤍,
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De-Tp0JmhtI/,Post,68,3,"🎃 ¡ESTE 31 DE OCTUBRE, HALLOWEEN SE VIVE EN CUMBIALLOWEEN! 👻 💃 Prepárate para una noche llena de música y mucha diversión junto a @sondelduke…",
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De-SxEXGo6t/,Post,8,1,🔥 ¡Vive lo mejor del rap con @gonzalogenek! 🎶 Disfruta de sus mejores conciertos … 🎟️ Compra tus entradas en VAOPE.COM #VaoJuntos con #vaope,
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De-R6tTSovG/,Post,1,0,"🎤 ¡Este 31 de octubre, celebra la Gran Fiesta de Disfraces junto a @losclavelesdelacumbiaoficial, @percycuestas y muchos artistas más! 🎃 🎟️ Compra tus entradas",
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De-Qkopmvnh/,Post,78,0,🥳 ¡@corazonserranoperu llega con muchos más conciertos para que disfrutes de todos sus temas musicales! 🤩 🎟️ Adquiere tus entradas en: VAOPE.COM #VaoJuntos con #vaope,
+2026-10-26,Vaope,Instagram,https://www.instagram.com/vaope.oficial/p/De-MCfRGpWD/,Post,2,0,"🤩🎉 ¡Santa Anita se prenderá con el 10° aniversario de Chankas Producciones! Este 07 de noviembre, la juerga llega al @complejo.santarosa…",
+2026-10-01,Blicket,Instagram,https://www.instagram.com/blicket.events/p/Dd-GAVCiYcF/,Post,262,3,Ya comenzó octubre con una agenda repleta de bandas y artistas que llegan muy pronto a Lima 💥🎤 ¿Ya tienes tus fechas separadas?,
+2026-07-09,Blicket,Instagram,https://www.instagram.com/blicket.events/reel/DalhPUjpEZP/,Reel,80,0,¿El cartel de Sold Out te rompió el corazón? 😫💔 ¡No te quedes fuera! En Blicket Events tenemos esa entrada que diste por perdida.,
+2026-10-15,Blicket,Instagram,https://www.instagram.com/blicket.events/p/Dej_jGOje23/,Post,12,0,"Ya se siente toda la vibra de IRON MAIDEN aquí en Lima, Perú 💥🇵🇪 Un concierto que definitivamente no te puedes perder. Así que, asegura tus entradas",
+2026-10-15,Blicket,Instagram,https://www.instagram.com/blicket.events/p/DeicUEuNiR_/,Post,12,0,En pocos días se viven grandes conciertos aquí en Lima 💥🎤 ¿Estás en búsqueda de entradas? Blicket es la solución más segura. 🎟️ Visita blicket.events,
+2026-10-10,Blicket,Instagram,https://www.instagram.com/blicket.events/p/DeUsacTCbkA/,Post,1764,11,"BTS se lleva la nacionalidad peruana 🇵🇪😌 ¿Qué nos espera en esta 3ra fecha, ARMY? 🎟️ Últimas entradas disponibles en blicket.events",
+2026-10-08,Blicket,Instagram,https://www.instagram.com/blicket.events/p/DePivdOCRpb/,Post,75,0,"Jay Wheeler, la voz favorita de la escena urbana, llega a Perú 🗡️💥 El Favorito llega a Lima con los temas más románticos e intensos…",
+2026-10-07,Blicket,Instagram,https://www.instagram.com/blicket.events/reel/DeOJLsVRHPg/,Reel,719,2,BTS sorprende en primera fecha cantando “HOME” 🎤💜 ¿Qué canciones esperas para las próximas fechas?,
+2026-10-07,Blicket,Instagram,https://www.instagram.com/blicket.events/reel/DeOI9kYRJ5l/,Reel,1357,17,"Las ARMYs de Perú SON CLAVE, y lo confirma BTS en su primera fecha 🫰🏼🥹💜 🎟️ Aún puedes conseguir tus entradas en blicket.events",
+2026-10-06,Blicket,Instagram,https://www.instagram.com/blicket.events/p/DeLQw4rNinj/,Post,7808,24,"ARMY, ya no queda nada para estas 3 grandes fechas de concierto 🥹💜 Así que prepárate con el setlist de BTS para su concierto en Lima",
+2026-10-06,Blicket,Instagram,https://www.instagram.com/blicket.events/p/DeKpSTHiZ1G/,Post,825,14,ARMY ¡Noticia de último minuto! 📣💜 Desde las 5 P.M. estará habilitada la venta oficial de las entradas liberadas para las 3 fechas de BTS,
+</script>
+
+<script>
+/* ============ CONFIGURACIÓN ============
+   Pega aquí los links CSV de tu Google Sheet (Archivo → Compartir → Publicar en la web → hoja → CSV).
+   Si los dejas vacíos, se usan los archivos data/cuentas.csv y data/posts.csv del repo. */
+const CONFIG = {
+  SHEET_CUENTAS_CSV: "",
+  SHEET_POSTS_CSV: "",
+  REFRESH_MIN: 5,
+  MI_MARCA: "Joinnus"
+};
+/* ======================================= */
+
+const COLORS = {"joinnus":"var(--c-joinnus)","teleticket":"var(--c-teleticket)","ticketmaster peru":"var(--c-ticketmaster)","ticketmaster perú":"var(--c-ticketmaster)","ticketmaster":"var(--c-ticketmaster)","vaope":"var(--c-vaope)","passline peru":"var(--c-passline)","passline perú":"var(--c-passline)","passline":"var(--c-passline)","blicket":"var(--c-blicket)"};
+const EXTRA = ["#5BA8B5","#B07A55","#7C8FD0","#A3A04A"]; // para ticketeras nuevas (se asignan en orden fijo)
+const NETS = ["Instagram","TikTok","Facebook","YouTube"];
+const NET_ICON = {Instagram:"IG",TikTok:"TT",Facebook:"FB",YouTube:"YT"};
+
+const CAMPAIGNS = [
+  {k:"Halloween / Ticketween", re:/halloween|ticketween|vao.?ween|cumbialloween|disfraz|terror|🎃/},
+  {k:"Sorteos y concursos", re:/sorte|ganador|ganate|gana un|concurso|participa|por opcion|duplica(s)? tus opciones/},
+  {k:"Promos y descuentos", re:/descuento|promo|\d+\s?%|2x1|preventa|oferta/},
+  {k:"Agenda / planes", re:/esta semana|planes|agenda|octubre llego|comenzo octubre|que tenemos|plan para cada|planazo/},
+  {k:"Fútbol y deporte", re:/clausura|partido|partidazo|\bvs\b|liga 1|club|estadio/},
+  {k:"Cobertura en vivo", re:/asi se vivio|pov|gracias|nos llevamos|sorprende|primera fecha|haciendo suyo|recuerdos/},
+  {k:"Reventa / sold out", re:/sold out|entradas liberadas|ultimas entradas|reventa|estafa/},
+  {k:"Lanzamiento de evento", re:/llega|llegan|este \d+ de|preparate|se prepara|no te puedes perder|imperdible/}
+];
+const RX_CTA = /entradas en|compra tus entradas|adquiere tus entradas|consigue|conseguir|tus entradas|encuentra tu|asegura tus entradas|visita |joinnus\.com|vaope\.com|blicket\.events|teleticket\.com|ticketmaster\.pe|link en (la )?bio|venta (oficial|presencial)|participa ahora|si compras entradas/;
+const RX_PROMO = /descuento|promo|\d+\s?%|2x1|preventa|oferta|sorte|ganate|por opcion/;
+const RX_URG = /ultimas? horas|ultimo llamado|ultimas entradas|ultima funcion|ultima oportunidad|sold out|quedan|no queda nada|ultimo minuto/;
+
+const norm = s => (s||"").normalize("NFKD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const fmt = n => n==null||isNaN(n) ? "—" : n>=1e6 ? (n/1e6).toFixed(n>=1e7?0:1).replace(".",",")+" M" : n>=1e4 ? Math.round(n/1e3)+" K" : n>=1e3 ? (n/1e3).toFixed(1).replace(".",",")+" K" : String(Math.round(n));
+const fmtFull = n => n==null||isNaN(n) ? "—" : Math.round(n).toLocaleString("es-PE");
+const pct = (n,d=1) => n==null||isNaN(n) ? "—" : (n*100).toFixed(d).replace(".",",")+"%";
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const median = a => { if(!a.length) return null; const s=[...a].sort((x,y)=>x-y), m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; };
+const num = v => { if(v==null||v==="") return null; const n=Number(String(v).replace(/[^\d.\-]/g,"")); return isNaN(n)?null:n; };
+
+function parseCSV(text){
+  const rows=[]; let row=[],f="",q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){ if(c=='"'){ if(text[i+1]=='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else if(c=='"') q=true; else if(c==','){row.push(f);f="";}
+    else if(c=='\n'||c=='\r'){ if(c=='\r'&&text[i+1]=='\n') i++; row.push(f); rows.push(row); row=[]; f=""; }
+    else f+=c; }
+  if(f!==""||row.length){row.push(f);rows.push(row);}
+  const h=(rows.shift()||[]).map(x=>norm(x).trim().replace(/\s+/g,"_"));
+  return rows.filter(r=>r.some(x=>x.trim()!=="")).map(r=>Object.fromEntries(h.map((k,i)=>[k,(r[i]??"").trim()])));
+}
+
+let DB={accounts:[],posts:[],history:[],source:"",loadedAt:null};
+const S={ents:new Set(), net:"Todas", camp:null, campEnt:null, q:"", sort:"inter", sortSS:{k:"medInter",dir:-1}, histNet:"Instagram", feedN:12, fresh:true, A:null, B:null, C:""};
+let ENT_LIST=[], COLOR_OF={};
+
+async function fetchText(url){ const r=await fetch(url+(url.includes("?")?"&":"?")+"t="+Date.now(),{cache:"no-store"}); if(!r.ok) throw new Error(r.status); return r.text(); }
+
+async function load(){
+  let c,p,src;
+  try{
+    if(CONFIG.SHEET_CUENTAS_CSV){ c=await fetchText(CONFIG.SHEET_CUENTAS_CSV); p=CONFIG.SHEET_POSTS_CSV?await fetchText(CONFIG.SHEET_POSTS_CSV):""; src="sheet"; }
+  }catch(e){ console.warn("Sheet no disponible",e); }
+  if(!c){ try{ c=await fetchText("data/cuentas.csv"); p=await fetchText("data/posts.csv"); src="repo"; }catch(e){} }
+  if(!c){ c=document.getElementById("seed-cuentas").textContent; p=document.getElementById("seed-posts").textContent; src="seed"; }
+  const acc=parseCSV(c.trim()).map(r=>({fecha:r.fecha,ent:r.ticketera,net:r.red,user:r.usuario,url:r.url,fol:num(r.seguidores),pubs:num(r.publicaciones),hearts:num(r.me_gusta_totales),talk:num(r.hablando_de_esto)})).filter(r=>r.ent&&r.net);
+  const posts=parseCSV((p||"").trim()).map(r=>({fecha:r.fecha,ent:r.ticketera,net:r.red||"Instagram",url:r.url,tipo:r.tipo,likes:num(r.likes),com:num(r.comentarios),views:num(r.vistas),img:r.imagen||"",tx:r.texto||""})).filter(r=>r.ent);
+  // último dato por ticketera+red, y el historial completo
+  const latest={}; acc.forEach(r=>{const k=r.ent+"|"+r.net; if(!latest[k]||r.fecha>=latest[k].fecha) latest[k]=r;});
+  DB={accounts:Object.values(latest),history:acc,posts:posts.map(enrich),source:src,loadedAt:new Date()};
+  const ents=[...new Set(DB.accounts.map(a=>a.ent))];
+  const me=ents.find(e=>norm(e)===norm(CONFIG.MI_MARCA));
+  ENT_LIST=(me?[me]:[]).concat(ents.filter(e=>e!==me));
+  let x=0; ENT_LIST.forEach(e=>{ COLOR_OF[e]=COLORS[norm(e)]||EXTRA[x++%EXTRA.length]; });
+  if(!S.ents.size) ENT_LIST.forEach(e=>S.ents.add(e)); else ENT_LIST.forEach(e=>{ if(!COLOR_OF[e]) S.ents.add(e); });
+  if(!S.A||!ENT_LIST.includes(S.A)) S.A=ENT_LIST[0];
+  if(!S.B||!ENT_LIST.includes(S.B)) S.B=ENT_LIST[1]||ENT_LIST[0];
+  if(S.C&&!ENT_LIST.includes(S.C)) S.C="";
+  render();
+}
+
+function enrich(p){
+  const t=norm(p.tx); const tags=CAMPAIGNS.filter(c=>c.re.test(t)).map(c=>c.k);
+  const hashtags=(p.tx.match(/#[\p{L}\p{N}_]+/gu)||[]).map(h=>h.toLowerCase());
+  const ageH=(Date.now()-new Date(p.fecha+"T12:00:00-05:00"))/36e5;
+  const noM=p.likes==null&&p.com==null;
+  return {...p,noM,inter:noM?null:(p.likes||0)+(p.com||0),tags:tags.length?tags:["Otros"],hashtags,cta:RX_CTA.test(t),promo:RX_PROMO.test(t),urg:RX_URG.test(t),fresh:ageH<48};
+}
+
+const isMe = e => norm(e)===norm(CONFIG.MI_MARCA);
+const sel = () => ENT_LIST.filter(e=>S.ents.has(e));
+const postNet = p => S.net==="Todas"||p.net===S.net; // posts de otros canales (web, blog) se ven con "Todas"
+const netsSel = () => S.net==="Todas"?NETS:[S.net];
+const acct = (e,n) => DB.accounts.find(a=>a.ent===e&&a.net===n);
+const total = e => netsSel().reduce((s,n)=>s+(acct(e,n)?.fol||0),0);
+const sw = e => `<span class="sw" style="background:${COLOR_OF[e]}"></span>`;
+
+/* ---------- tooltip ---------- */
+const tip=document.getElementById("tip");
+document.addEventListener("mousemove",e=>{ const t=e.target.closest("[data-tip]"); if(!t){tip.style.opacity=0;return;} tip.innerHTML=t.dataset.tip; tip.style.opacity=1; const w=tip.offsetWidth,h=tip.offsetHeight; let x=e.clientX+14,y=e.clientY+14; if(x+w>innerWidth-8)x=e.clientX-w-14; if(y+h>innerHeight-8)y=e.clientY-h-14; tip.style.left=x+"px"; tip.style.top=y+"px"; });
+
+function barList(items,{max,valFmt=fmt,sub=()=>""}={}){
+  if(!items.length) return `<div class="empty">Sin datos para esta selección.</div>`;
+  const m=max??Math.max(...items.map(i=>i.v),1);
+  return items.map(i=>`<div class="bar ${isMe(i.e)?"me":""}" data-tip="${esc(i.tip||"")}">
+    <div class="n">${sw(i.e)}<span>${esc(i.e)}</span></div>
+    <div class="t"><div class="f" style="width:${Math.max(0,i.v/m*100)}%;background:${COLOR_OF[i.e]}"></div></div>
+    <div class="val"><b>${valFmt(i.v)}</b>${sub(i)}</div></div>`).join("");
+}
+
+/* ---------- render ---------- */
+function render(){
+  renderStatus(); renderFilters(); renderLead(); renderKPIs(); renderNetCards(); renderTotals(); renderMix(); renderDuel(); renderSS(); renderHeat(); renderFeed(); renderHist(); renderRaw();
+}
+
+function renderStatus(){
+  const lbl={sheet:'<span class="dot live"></span>En vivo · Google Sheet',repo:'<span class="dot live"></span>Datos del repositorio',seed:'<span class="dot"></span>Snapshot incluido'}[DB.source];
+  const last=DB.accounts.reduce((m,a)=>a.fecha>m?a.fecha:m,"");
+  document.getElementById("srcLabel").innerHTML=lbl+` · último dato ${last?new Date(last+"T12:00:00").toLocaleDateString("es-PE",{day:"numeric",month:"short",year:"numeric"}):"—"}`;
+  tickAgo();
+}
+function tickAgo(){ if(!DB.loadedAt) return; const m=Math.round((Date.now()-DB.loadedAt)/6e4); document.getElementById("ago").textContent= m<1?"Actualizado recién":`Actualizado hace ${m} min`; }
+
+function renderFilters(){
+  document.getElementById("fEnt").innerHTML=ENT_LIST.map(e=>`<button class="chip ent" data-ent="${esc(e)}" aria-pressed="${S.ents.has(e)}">${sw(e)}${esc(e)}</button>`).join("")+
+    `<button class="chip" id="allEnt" aria-pressed="false">Todas</button>`;
+  document.getElementById("fNet").innerHTML=["Todas",...NETS].map(n=>`<button class="chip" data-net="${n}" aria-pressed="${S.net===n}">${n}</button>`).join("");
+}
+
+function renderLead(){
+  const ents=sel(); const me=ENT_LIST.find(isMe);
+  const rank=[...ents].sort((a,b)=>total(b)-total(a));
+  const leader=rank[0];
+  const nets=netsSel().map(n=>{ const r=ents.filter(e=>acct(e,n)?.fol).sort((a,b)=>acct(b,n).fol-acct(a,n).fol); return {n,lead:r[0]}; }).filter(x=>x.lead);
+  const meLead=nets.filter(x=>x.lead===me).map(x=>x.n);
+  let s=`<b>${esc(leader||"—")}</b> lidera en audiencia total ${S.net==="Todas"?"sumando todas las redes":"en "+S.net} con <b>${fmt(total(leader))}</b> seguidores`;
+  if(me&&ents.includes(me)){ const pos=rank.indexOf(me)+1; s+= leader===me?"." : `; <b>Joinnus</b> está en el puesto <b>#${pos}</b> de ${rank.length} con ${fmt(total(me))}.`; s+= meLead.length?` Joinnus es #1 en <b>${meLead.join(", ")}</b>.`:""; }
+  else s+=".";
+  document.getElementById("lead").innerHTML=s;
+}
+
+function renderKPIs(){
+  const ents=sel(); const me=ENT_LIST.find(isMe); const tot=ents.reduce((s,e)=>s+total(e),0);
+  const rank=[...ents].sort((a,b)=>total(b)-total(a));
+  const mp=DB.posts.filter(p=>p.ent===me&&postNet(p));
+  const k=[
+    {v:fmt(me?total(me):null),l:"seguidores de Joinnus",s:S.net==="Todas"?"IG + TikTok + FB + YouTube":S.net},
+    {v:me&&ents.includes(me)?"#"+(rank.indexOf(me)+1):"—",l:`posición entre ${ents.length} ticketeras`,s:"por audiencia total"},
+    {v:me&&tot?pct(total(me)/tot):"—",l:"share de audiencia",s:"vs. ticketeras seleccionadas"},
+    {v:esc(rank[0]||"—"),l:"ticketera con más seguidores",s:fmt(total(rank[0]))+" seguidores",accent:true}
+  ];
+  document.getElementById("kpis").innerHTML=k.map(x=>`<div class="kpi"><div class="v ${x.accent?"accent":""}">${x.v}</div><div class="l">${x.l}</div><div class="s">${x.s}</div></div>`).join("");
+}
+
+function renderNetCards(){
+  const ents=sel();
+  document.getElementById("netCards").style.gridTemplateColumns=S.net==="Todas"?"":"1fr";
+  document.getElementById("netCards").innerHTML=netsSel().map(n=>{
+    const items=ents.map(e=>({e,a:acct(e,n)})).filter(x=>x.a&&x.a.fol!=null).sort((x,y)=>y.a.fol-x.a.fol)
+      .map(x=>({e:x.e,v:x.a.fol,a:x.a,tip:`<b>${esc(x.e)}</b> · ${n}<br>${esc(x.a.user||"")}<br>${fmtFull(x.a.fol)} seguidores`+(x.a.pubs?`<br><span class=m>${fmtFull(x.a.pubs)} publicaciones</span>`:"")+(x.a.hearts?`<br><span class=m>${fmt(x.a.hearts)} me gusta totales</span>`:"")+(x.a.talk?`<br><span class=m>${fmtFull(x.a.talk)} hablando de esto</span>`:"")}));
+    const missing=ents.filter(e=>!acct(e,n)?.fol);
+    const sum=items.reduce((s,i)=>s+i.v,0);
+    return `<div class="card"><h3>${n}<small>${fmt(sum)} en total</small></h3><p class="sub">${items.length} cuentas${missing.length?` · sin cuenta encontrada: ${missing.map(esc).join(", ")}`:""}</p>
+      <div class="bars">${barList(items,{sub:i=>` <span>· ${pct(i.v/sum,0)}</span>`})}</div></div>`;
+  }).join("");
+}
+
+function renderTotals(){
+  const ents=sel(); const tot=ents.reduce((s,e)=>s+total(e),0);
+  const items=ents.map(e=>({e,v:total(e)})).sort((a,b)=>b.v-a.v).map(i=>({...i,tip:`<b>${esc(i.e)}</b><br>${fmtFull(i.v)} seguidores<br><span class=m>${pct(i.v/tot)} del total</span>`}));
+  document.getElementById("totalBars").innerHTML=barList(items,{sub:i=>` <span>· ${pct(i.v/tot,0)}</span>`});
+}
+
+function renderMix(){
+  const ents=sel(); const nets=NETS; const op=[1,.72,.48,.28];
+  const legend=`<div class="frow" style="margin-bottom:10px;font-size:12px;color:var(--ink2)">${nets.map((n,i)=>`<span style="display:inline-flex;align-items:center;gap:6px"><span style="width:12px;height:10px;border-radius:3px;background:var(--ink2);opacity:${op[i]}"></span>${n}</span>`).join("")}</div>`;
+  const rows=ents.map(e=>{ const vals=nets.map(n=>acct(e,n)?.fol||0); const t=vals.reduce((a,b)=>a+b,0)||1;
+    return `<div class="bar ${isMe(e)?"me":""}" style="grid-template-columns:minmax(110px,150px) 1fr"><div class="n">${sw(e)}<span>${esc(e)}</span></div>
+    <div class="split">${vals.map((v,i)=>v?`<div data-tip="<b>${esc(e)}</b> · ${nets[i]}<br>${pct(v/t)} de su audiencia<br><span class=m>${fmtFull(v)} seguidores</span>" style="width:${v/t*100}%;background:${COLOR_OF[e]};opacity:${op[i]}"></div>`:"").join("")}</div></div>`; }).join("");
+  document.getElementById("mix").innerHTML=legend+`<div class="bars">${rows}</div><p class="note">Siempre sobre las 4 redes, sin importar el filtro de red.</p>`;
+}
+
+function ssStats(e){
+  const ps=DB.posts.filter(p=>p.ent===e&&postNet(p)&&(S.fresh||!p.fresh));
+  const ig=acct(e,"Instagram")?.fol, tt=acct(e,"TikTok"), fb=acct(e,"Facebook");
+  const pm=ps.filter(p=>p.inter!=null); const med=median(pm.map(p=>p.inter));
+  return {e,n:ps.length,medInter:med,er:med!=null&&ig?med/ig:null,best:pm.reduce((m,p)=>!m||p.inter>m.inter?p:m,null),
+    cta:ps.length?ps.filter(p=>p.cta).length/ps.length:null,promo:ps.length?ps.filter(p=>p.promo).length/ps.length:null,urg:ps.length?ps.filter(p=>p.urg).length/ps.length:null,
+    convo:pm.length?pm.reduce((s,p)=>s+(p.com||0),0)/Math.max(1,pm.reduce((s,p)=>s+(p.likes||0),0)):null,
+    ttLikesVid:tt?.hearts&&tt?.pubs?tt.hearts/tt.pubs:null, fbTalk:fb?.talk&&fb?.fol?fb.talk/fb.fol:null,
+    perDay:ps.length?ps.length/Math.max(1,(new Set(ps.map(p=>p.fecha))).size):null};
+}
+
+function duelEnts(){ return [S.A,S.B,S.C].filter((e,i,a)=>e&&ENT_LIST.includes(e)&&a.indexOf(e)===i); }
+function duelRows(){
+  const es=duelEnts(), st=Object.fromEntries(es.map(e=>[e,ssStats(e)]));
+  const mk=(l,get,f,raw)=>({l,f,raw,v:Object.fromEntries(es.map(e=>[e,get(e)]))});
+  return {es,rows:[...NETS.map(n=>mk(`Seguidores ${n}`,e=>acct(e,n)?.fol??null,fmt,"n")),
+    mk("Audiencia total (filtro de red)",e=>total(e),fmt,"n"),
+    mk("Interacción mediana por post (IG)",e=>st[e].medInter,fmt,"n"),
+    mk("Engagement rate por post (IG)",e=>st[e].er,x=>pct(x,2),"p"),
+    mk("% posts con CTA de compra",e=>st[e].cta,x=>pct(x,0),"p"),
+    mk("% posts con promo o sorteo",e=>st[e].promo,x=>pct(x,0),"p"),
+    mk("Me gusta por video (TikTok)",e=>st[e].ttLikesVid,fmt,"n"),
+    mk("“Hablando de esto” / seguidores (FB)",e=>st[e].fbTalk,x=>pct(x,1),"p")]};
+}
+function renderDuel(){
+  const opt=(cur)=>ENT_LIST.map(e=>`<option ${e===cur?"selected":""}>${esc(e)}</option>`).join("");
+  document.getElementById("cmpA").innerHTML=opt(S.A); document.getElementById("cmpB").innerHTML=opt(S.B);
+  document.getElementById("cmpC").innerHTML=`<option value="">+ Agregar tercera (opcional)</option>`+opt(S.C);
+  const {es,rows}=duelRows();
+  document.getElementById("duel").innerHTML=rows.map(r=>{
+    const vals=es.map(e=>({e,v:r.v[e]||0})), t=vals.reduce((s,x)=>s+x.v,0);
+    const head=`<div class="lbl" style="justify-content:flex-start;gap:6px 18px;flex-wrap:wrap"><span style="flex-basis:100%;color:var(--ink2)">${r.l}</span>${es.map(e=>`<span>${sw(e)} ${esc(e)}: <b>${r.f(r.v[e])}</b></span>`).join("")}</div>`;
+    if(!t) return `<div class="row">${head}<div class="winner">sin datos</div></div>`;
+    const srt=[...vals].sort((a,b)=>b.v-a.v), w=srt[0], s2=srt[1];
+    const tie=s2&&w.v===s2.v, ratio=s2&&s2.v?w.v/s2.v:null;
+    return `<div class="row">${head}
+      <div class="split" data-tip="<b>${esc(r.l)}</b><br>${es.map(e=>`${esc(e)}: ${r.f(r.v[e])}`).join("<br>")}">${vals.map(x=>`<div style="width:${x.v/t*100}%;background:${COLOR_OF[x.e]}"></div>`).join("")}</div>
+      <div class="winner">${tie?"Empate en el primer lugar":`Gana <b style="color:var(--ink)">${esc(w.e)}</b>${ratio&&isFinite(ratio)?` · ${ratio.toFixed(1).replace(".",",")}x sobre ${esc(s2.e)}`:""}`}</div></div>`;
+  }).join("");
+}
+
+function renderSS(){
+  const st=sel().map(ssStats);
+  const cols=[{k:"e",l:"Ticketera"},{k:"n",l:"Posts",f:x=>x??"—"},{k:"medInter",l:"Interacción mediana",f:fmt},{k:"er",l:"ER por post",f:x=>pct(x,2)},{k:"cta",l:"% con CTA",f:x=>pct(x,0)},{k:"promo",l:"% promo/sorteo",f:x=>pct(x,0)},{k:"urg",l:"% urgencia",f:x=>pct(x,0)},{k:"convo",l:"Coment./likes",f:x=>pct(x,1)},{k:"ttLikesVid",l:"Likes/video TT",f:fmt},{k:"fbTalk",l:"Hablando de esto FB",f:x=>pct(x,1)}];
+  const {k,dir}=S.sortSS;
+  st.sort((a,b)=>k==="e"?dir*a.e.localeCompare(b.e):dir*((a[k]??-1)-(b[k]??-1)));
+  document.getElementById("ssTable").innerHTML=`<thead><tr>${cols.map(c=>`<th data-sk="${c.k}">${c.l}${k===c.k?(dir<0?" ↓":" ↑"):""}</th>`).join("")}</tr></thead><tbody>`+
+    st.map(s=>`<tr class="${isMe(s.e)?"me":""}">${cols.map(c=>c.k==="e"?`<td>${sw(s.e)}${esc(s.e)}</td>`:`<td>${c.f(s[c.k])}</td>`).join("")}</tr>`).join("")+`</tbody>`;
+  // insights automáticos
+  const me=ENT_LIST.find(isMe), with_=st.filter(s=>s.n);
+  const bestER=[...with_].filter(s=>s.er!=null).sort((a,b)=>b.er-a.er)[0];
+  const bestCTA=[...with_].sort((a,b)=>(b.cta??0)-(a.cta??0))[0];
+  const topPost=with_.map(s=>s.best).filter(Boolean).sort((a,b)=>b.inter-a.inter)[0];
+  const meS=st.find(s=>s.e===me);
+  const ins=[];
+  if(bestER) ins.push({k:"Mejor engagement",h:`<b>${esc(bestER.e)}</b> logra ${pct(bestER.er,2)} de interacción por post sobre su base de Instagram${meS&&meS.e!==bestER.e&&meS.er!=null?`; Joinnus está en ${pct(meS.er,2)}.`:"."}`});
+  if(topPost) ins.push({k:"Post con más interacción",h:`<b>${esc(topPost.ent)}</b>: ${fmtFull(topPost.inter)} interacciones — “${esc(topPost.tx.slice(0,90))}…” <span class=fresh>(${topPost.tags.join(", ")})</span>`});
+  if(bestCTA) ins.push({k:"Más orientada a venta",h:`<b>${esc(bestCTA.e)}</b> incluye llamado a comprar en ${pct(bestCTA.cta,0)} de sus posts${meS&&meS.e!==bestCTA.e?`; Joinnus en ${pct(meS.cta,0)}.`:"."}`});
+  document.getElementById("insights").innerHTML=ins.map(i=>`<div class="ins"><div class="k">${i.k}</div>${i.h}</div>`).join("")||`<div class="empty">Carga posts en la hoja “posts” para ver estos indicadores.</div>`;
+}
+
+function postsFiltered(ignoreCamp){
+  const q=norm(S.q);
+  return DB.posts.filter(p=>S.ents.has(p.ent)&&postNet(p)&&(ignoreCamp||!S.camp||p.tags.includes(S.camp)||p.hashtags.includes(S.camp))&&(!S.campEnt||p.ent===S.campEnt)&&(!q||norm(p.tx+" "+p.ent+" "+p.tags.join(" ")).includes(q)));
+}
+
+function renderHeat(){
+  const ents=sel(); const ps=DB.posts.filter(p=>S.ents.has(p.ent)&&postNet(p));
+  const camps=[...CAMPAIGNS.map(c=>c.k),"Otros"].filter(c=>ps.some(p=>p.tags.includes(c)));
+  if(!camps.length){ document.getElementById("heat").innerHTML=`<tbody><tr><td class="empty">No hay posts cargados de ${S.net==="Todas"?"estas ticketeras":S.net}. Por ahora el análisis de posts es de Instagram; puedes sumar posts de otras redes en la hoja “posts”.</td></tr></tbody>`; }
+  const max=Math.max(1,...camps.flatMap(c=>ents.map(e=>ps.filter(p=>p.ent===e&&p.tags.includes(c)).length)));
+  document.getElementById("heat").innerHTML=`<thead><tr><th>Campaña / tema</th>${ents.map(e=>`<th>${sw(e)}${esc(e)}</th>`).join("")}</tr></thead><tbody>`+
+    camps.map(c=>`<tr><td>${esc(c)}</td>${ents.map(e=>{ const arr=ps.filter(p=>p.ent===e&&p.tags.includes(c)); const n=arr.length, it=arr.reduce((s,p)=>s+(p.inter||0),0);
+      const a=n?0.15+0.75*n/max:0; const on=S.camp===c&&S.campEnt===e;
+      return `<td class="c ${on?"sel":""}" data-camp="${esc(c)}" data-cent="${esc(e)}" style="background:rgba(30,227,163,${a});color:${a>.55?"var(--brand-ink)":"var(--ink)"}" data-tip="<b>${esc(e)}</b> · ${esc(c)}<br>${n} posts<br><span class=m>${arr.some(p=>p.inter!=null)?fmtFull(it)+" interacciones":"sin métricas (registro manual)"}</span>">${n||"·"}</td>`; }).join("")}</tr>`).join("")+`</tbody>`;
+  const hs={}; ps.forEach(p=>p.hashtags.forEach(h=>{hs[h]=hs[h]||{n:0,e:new Set()}; hs[h].n++; hs[h].e.add(p.ent);}));
+  const hl=Object.entries(hs).sort((a,b)=>b[1].n-a[1].n).slice(0,20);
+  document.getElementById("hashtags").innerHTML=hl.length?hl.map(([h,v])=>`<button class="chip" data-hash="${esc(h)}" aria-pressed="${S.camp===h}" data-tip="${[...v.e].map(esc).join(", ")}">${esc(h)} · ${v.n}</button>`).join(""):`<span class="empty">Sin hashtags en los posts cargados.</span>`;
+  const cs=document.getElementById("campSel");
+  cs.innerHTML=`<option value="">Todas las campañas</option>`+camps.map(c=>`<option ${S.camp===c?"selected":""}>${esc(c)}</option>`).join("");
+}
+
+function renderFeed(){
+  let ps=postsFiltered();
+  ps.sort(S.sort==="inter"?(a,b)=>(b.inter??-1)-(a.inter??-1)||b.fecha.localeCompare(a.fecha):(a,b)=>b.fecha.localeCompare(a.fecha));
+  const f=[S.camp&&`campaña “${S.camp}”`,S.campEnt&&`de ${S.campEnt}`,S.q&&`que contienen “${S.q}”`].filter(Boolean).join(" ");
+  document.getElementById("feedSub").innerHTML=`${ps.length} posts ${f}${S.camp||S.campEnt?` · <a href="#" id="clearCamp" style="color:var(--brand)">quitar filtro</a>`:""}`;
+  const total_=ps.length; ps=ps.slice(0,S.feedN);
+  document.getElementById("feed").innerHTML=ps.length?ps.map(p=>`<article class="post">
+    <div class="hd"><b>${sw(p.ent)}${esc(p.ent)}</b><span>${NET_ICON[p.net]||p.net} · ${esc(p.tipo||"")} · ${new Date(p.fecha+"T12:00:00").toLocaleDateString("es-PE",{day:"numeric",month:"short"})}</span></div>
+    <div class="mt">${p.noM?`<span class="fresh">Pieza de campaña registrada manualmente · sin métricas</span>`:`<span><b>${fmtFull(p.likes)}</b> likes</span><span><b>${fmtFull(p.com)}</b> coment.</span>`}${p.views?`<span><b>${fmt(p.views)}</b> vistas</span>`:""}${p.fresh&&!p.noM?`<span class="fresh">· &lt;48 h, aún sumando</span>`:""}</div>
+    ${p.img?`<img src="${esc(p.img)}" alt="Pieza: ${esc(p.tx.slice(0,60))}" loading="lazy" style="width:100%;border-radius:10px;display:block">`:""}<div class="tx">${esc(p.tx)}</div>
+    <div class="tags">${p.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}${p.cta?`<span class="tag cta">CTA compra</span>`:""}${p.promo?`<span class="tag promo">Promo</span>`:""}${p.urg?`<span class="tag urg">Urgencia</span>`:""}</div>
+    ${p.url?`<a class="go" href="${esc(p.url)}" target="_blank" rel="noopener">Ver post ↗</a>`:""}</article>`).join("")+(total_>S.feedN?`<button class="btn ghost" id="more" style="grid-column:1/-1;justify-self:center">Ver más posts (${total_-S.feedN})</button>`:""):`<div class="empty">No hay posts con estos filtros.</div>`;
+}
+
+function renderHist(){
+  document.getElementById("histNet").innerHTML=NETS.map(n=>`<button data-hn="${n}" aria-pressed="${S.histNet===n}">${n}</button>`).join("");
+  const ents=sel(); const H=DB.history.filter(r=>r.net===S.histNet&&ents.includes(r.ent)&&r.fol!=null);
+  const dates=[...new Set(H.map(r=>r.fecha))].sort();
+  const el=document.getElementById("hist");
+  if(dates.length<2){ el.innerHTML=`<div class="callout">Por ahora hay <b>${dates.length} fecha</b> registrada (${dates[0]||"—"}). Cuando el equipo sume una nueva medición en la hoja “cuentas” (recomendado: cada lunes), aquí verás la curva de crecimiento y la ganancia de seguidores por semana.</div>`; return; }
+  const W=1000,Hh=280,pl=56,pr=110,pt=12,pb=28; const x=d=>pl+(dates.indexOf(d)/(dates.length-1))*(W-pl-pr);
+  const max=Math.max(...H.map(r=>r.fol))*1.05; const y=v=>pt+(1-v/max)*(Hh-pt-pb);
+  const ticks=[0,.25,.5,.75,1].map(t=>t*max);
+  let svg=`<svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="Evolución de seguidores en ${S.histNet}">`;
+  svg+=ticks.map(t=>`<line x1="${pl}" x2="${W-pr}" y1="${y(t)}" y2="${y(t)}" stroke="rgba(255,255,255,.07)"/><text x="${pl-8}" y="${y(t)+4}" fill="#7f93a5" font-size="11" text-anchor="end">${fmt(t)}</text>`).join("");
+  svg+=dates.map(d=>`<text x="${x(d)}" y="${Hh-8}" fill="#7f93a5" font-size="11" text-anchor="middle">${d.slice(5)}</text>`).join("");
+  ents.forEach(e=>{ const pts=dates.map(d=>H.find(r=>r.ent===e&&r.fecha===d)).filter(Boolean); if(!pts.length) return;
+    svg+=`<polyline fill="none" stroke="${COLOR_OF[e]}" stroke-width="${isMe(e)?3:2}" points="${pts.map(r=>x(r.fecha)+","+y(r.fol)).join(" ")}"/>`;
+    const last=pts[pts.length-1], first=pts[0];
+    svg+=pts.map(r=>`<circle cx="${x(r.fecha)}" cy="${y(r.fol)}" r="4" fill="${COLOR_OF[e]}" stroke="#081b2c" stroke-width="2"/><circle cx="${x(r.fecha)}" cy="${y(r.fol)}" r="12" fill="transparent" data-tip="<b>${esc(e)}</b> · ${r.fecha}<br>${fmtFull(r.fol)} seguidores"/>`).join("");
+    svg+=`<text x="${x(last.fecha)+8}" y="${y(last.fol)+4}" fill="#b9c7d3" font-size="11">${esc(e)} ${last.fol>=first.fol?"+":""}${fmt(last.fol-first.fol)}</text>`; });
+  el.innerHTML=svg+"</svg>";
+}
+
+function renderRaw(){
+  const rows=DB.accounts.filter(a=>S.ents.has(a.ent)&&netsSel().includes(a.net)).sort((a,b)=>ENT_LIST.indexOf(a.ent)-ENT_LIST.indexOf(b.ent)||NETS.indexOf(a.net)-NETS.indexOf(b.net));
+  document.getElementById("raw").innerHTML=`<thead><tr><th>Ticketera</th><th>Red</th><th>Cuenta</th><th>Seguidores</th><th>Publicaciones</th><th>Me gusta totales</th><th>Hablando de esto</th><th>Fecha</th></tr></thead><tbody>`+
+    rows.map(a=>`<tr class="${isMe(a.ent)?"me":""}"><td>${sw(a.ent)}${esc(a.ent)}</td><td>${a.net}</td><td>${a.url?`<a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.user)}</a>`:esc(a.user)}</td><td>${fmtFull(a.fol)}</td><td>${fmtFull(a.pubs)}</td><td>${fmtFull(a.hearts)}</td><td>${fmtFull(a.talk)}</td><td>${a.fecha}</td></tr>`).join("")+`</tbody>`;
+}
+
+/* ---------- eventos ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,td.c,th[data-sk],a#clearCamp"); if(!t) return;
+  if(t.dataset.ent){ const v=t.dataset.ent; if(S.ents.has(v)&&S.ents.size>1) S.ents.delete(v); else S.ents.add(v); }
+  else if(t.id==="allEnt"){ ENT_LIST.forEach(x=>S.ents.add(x)); }
+  else if(t.dataset.net){ S.net=t.dataset.net; }
+  else if(t.dataset.camp){ const same=S.camp===t.dataset.camp&&S.campEnt===t.dataset.cent; S.camp=same?null:t.dataset.camp; S.campEnt=same?null:t.dataset.cent; render(); document.getElementById("feed").scrollIntoView({behavior:"smooth",block:"start"}); return; }
+  else if(t.dataset.hash){ S.camp=S.camp===t.dataset.hash?null:t.dataset.hash; S.campEnt=null; }
+  else if(t.dataset.sort){ S.sort=t.dataset.sort; document.querySelectorAll("[data-sort]").forEach(b=>b.setAttribute("aria-pressed",b===t)); renderFeed(); return; }
+  else if(t.dataset.hn){ S.histNet=t.dataset.hn; renderHist(); return; }
+  else if(t.dataset.sk){ S.sortSS={k:t.dataset.sk,dir:S.sortSS.k===t.dataset.sk?-S.sortSS.dir:-1}; renderSS(); return; }
+  else if(t.id==="clearCamp"){ e.preventDefault(); S.camp=null; S.campEnt=null; }
+  else if(t.id==="refresh"){ t.textContent="Actualizando…"; load().finally(()=>t.textContent="Actualizar"); return; }
+  else if(t.id==="more"){ S.feedN+=12; renderFeed(); return; }
+  else if(t.dataset.exp){ downloadCSV(t.dataset.exp); return; }
+  else if(t.id==="xlsx"){ downloadXLSX(t); return; }
+  else return;
+  render();
+});
+document.getElementById("cmpA").addEventListener("change",e=>{S.A=e.target.value;renderDuel();});
+document.getElementById("cmpB").addEventListener("change",e=>{S.B=e.target.value;renderDuel();});
+document.getElementById("cmpC").addEventListener("change",e=>{S.C=e.target.value;renderDuel();});
+document.getElementById("freshChk").addEventListener("change",e=>{S.fresh=e.target.checked;renderSS();renderDuel();});
+document.getElementById("q").addEventListener("input",e=>{S.q=e.target.value;renderFeed();});
+document.getElementById("campSel").addEventListener("change",e=>{S.camp=e.target.value||null;S.campEnt=null;renderHeat();renderFeed();});
+
+/* ---------- exportación ---------- */
+const P2=x=>x==null||isNaN(x)?null:Math.round(x*100000)/1000; // ratio → % numérico con 2 decimales
+function exportTables(){
+  const ents=sel(), nets=netsSel();
+  const cuentas=DB.accounts.filter(a=>S.ents.has(a.ent)&&nets.includes(a.net)).sort((a,b)=>ENT_LIST.indexOf(a.ent)-ENT_LIST.indexOf(b.ent)||NETS.indexOf(a.net)-NETS.indexOf(b.net))
+    .map(a=>({"Fecha":a.fecha,"Ticketera":a.ent,"Red":a.net,"Cuenta":a.user,"URL":a.url,"Seguidores":a.fol,"Publicaciones":a.pubs,"Me gusta totales":a.hearts,"Hablando de esto":a.talk}));
+  const historial=DB.history.filter(a=>S.ents.has(a.ent)&&nets.includes(a.net)).sort((a,b)=>a.fecha.localeCompare(b.fecha)||ENT_LIST.indexOf(a.ent)-ENT_LIST.indexOf(b.ent))
+    .map(a=>({"Fecha":a.fecha,"Ticketera":a.ent,"Red":a.net,"Cuenta":a.user,"Seguidores":a.fol,"Publicaciones":a.pubs,"Me gusta totales":a.hearts,"Hablando de esto":a.talk}));
+  const posts=DB.posts.filter(p=>S.ents.has(p.ent)&&postNet(p)).sort((a,b)=>b.fecha.localeCompare(a.fecha))
+    .map(p=>({"Fecha":p.fecha,"Ticketera":p.ent,"Red":p.net,"Tipo":p.tipo,"Likes":p.likes,"Comentarios":p.com,"Interacciones":p.inter,"Campañas":p.tags.join(" | "),"Hashtags":p.hashtags.join(" "),"CTA compra":p.cta?"Sí":"No","Promo/sorteo":p.promo?"Sí":"No","Urgencia":p.urg?"Sí":"No","Texto":p.tx,"URL":p.url}));
+  const ss=ents.map(ssStats).map(s=>({"Ticketera":s.e,"Posts analizados":s.n,"Interacción mediana":s.medInter,"ER por post (%)":P2(s.er),"% con CTA":P2(s.cta),"% promo/sorteo":P2(s.promo),"% urgencia":P2(s.urg),"Comentarios/likes (%)":P2(s.convo),"Likes por video TikTok":s.ttLikesVid==null?null:Math.round(s.ttLikesVid),"Hablando de esto FB (%)":P2(s.fbTalk)}));
+  const pf=DB.posts.filter(p=>S.ents.has(p.ent)&&postNet(p));
+  const camps=[...CAMPAIGNS.map(c=>c.k),"Otros"].filter(c=>pf.some(p=>p.tags.includes(c)));
+  const campanas=[]; camps.forEach(c=>ents.forEach(e=>{ const a=pf.filter(p=>p.ent===e&&p.tags.includes(c)); if(a.length) campanas.push({"Campaña":c,"Ticketera":e,"Posts":a.length,"Interacciones":a.reduce((s,p)=>s+(p.inter||0),0)}); }));
+  const {es,rows}=duelRows();
+  const comp=rows.map(r=>{ const o={"Métrica":r.l}; es.forEach(e=>{ o[e]=r.raw==="p"?P2(r.v[e]):(r.v[e]==null?null:Math.round(r.v[e])); }); const best=[...es].sort((a,b)=>(r.v[b]||0)-(r.v[a]||0))[0]; o["Gana"]=(r.v[best]||0)?best:""; return o; });
+  return {"Cuentas":cuentas,"Historial":historial,"Posts":posts,"Social selling":ss,"Campañas":campanas,"Comparador":comp};
+}
+const stamp=()=>new Date().toISOString().slice(0,10);
+function save(blob,name){ const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
+function downloadCSV(name){
+  const rows=exportTables()[name]||[]; if(!rows.length){ alert("No hay datos para exportar con los filtros actuales."); return; }
+  const cols=Object.keys(rows[0]);
+  // Formato Excel en español: separador ";" y decimales con coma; BOM para tildes.
+  const cell=v=>{ if(v==null) return ""; if(typeof v==="number") return String(v).replace(".",","); const t=String(v); return /[;"\n\r]/.test(t)?`"${t.replace(/"/g,'""')}"`:t; };
+  const csv="﻿"+[cols.join(";"),...rows.map(r=>cols.map(c=>cell(r[c])).join(";"))].join("\r\n");
+  save(new Blob([csv],{type:"text/csv;charset=utf-8"}),`radar-ticketeras_${name.toLowerCase().replace(/\s+/g,"-").normalize("NFKD").replace(/[̀-ͯ]/g,"")}_${stamp()}.csv`);
+}
+function loadXLSX(){ return window.XLSX?Promise.resolve():new Promise((ok,ko)=>{ const sc=document.createElement("script"); sc.src="assets/xlsx.full.min.js"; sc.onload=ok; sc.onerror=()=>{ const s2=document.createElement("script"); s2.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"; s2.onload=ok; s2.onerror=ko; document.head.appendChild(s2); }; document.head.appendChild(sc); }); }
+async function downloadXLSX(btn){
+  const txt=btn.textContent; btn.textContent="Generando…";
+  try{ await loadXLSX(); const wb=XLSX.utils.book_new(); const T=exportTables();
+    Object.entries(T).forEach(([n,rows])=>{ const ws=XLSX.utils.json_to_sheet(rows.length?rows:[{"Sin datos":"No hay datos con los filtros actuales"}]); const cols=Object.keys(rows[0]||{a:1}); ws["!cols"]=cols.map(c=>({wch:c==="Texto"?80:c==="URL"?45:Math.max(12,c.length+2)})); XLSX.utils.book_append_sheet(wb,ws,n.slice(0,31)); });
+    XLSX.writeFile(wb,`radar-ticketeras_${stamp()}.xlsx`);
+  }catch(e){ alert("No se pudo generar el Excel (¿sin internet?). Usa los botones CSV."); }
+  btn.textContent=txt;
+}
+
+load();
+setInterval(load, CONFIG.REFRESH_MIN*6e4);
+setInterval(tickAgo, 3e4);
+</script>
+</body>
+</html>
