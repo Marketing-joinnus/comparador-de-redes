@@ -73,7 +73,9 @@ h2{font-size:22px;margin:0 0 4px;font-weight:700}
 .bar .f{height:100%;border-radius:0 4px 4px 0;min-width:2px;transition:width .4s ease}
 .bar .val{text-align:right;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .bar .val b{font-weight:700}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;flex:none;vertical-align:middle}
 .bar .val span{color:var(--muted)}
+.bar .val .wd{font-size:11px;color:var(--ink2);font-weight:500}
 .empty{color:var(--muted);font-size:13px;padding:8px 0}
 /* tablas */
 .tbl-wrap{overflow-x:auto}
@@ -162,7 +164,13 @@ footer b{color:var(--ink2)}
 
   <section>
     <h2>Seguidores por red</h2>
-    <p class="sub">Comparación directa en cada plataforma. Pasa el cursor por una barra para ver el detalle.</p>
+    <p class="sub">Comparación directa en cada plataforma. Pasa el cursor por una barra o un punto para ver el detalle.</p>
+    <div class="frow" style="margin-bottom:14px">
+      <span class="flabel">Vista</span>
+      <div class="seg" role="group" aria-label="Vista de seguidores"><button data-nv="now" aria-pressed="true">Actual</button><button data-nv="week" aria-pressed="false">Evolución semanal</button></div>
+      <div class="seg" id="wmSeg" role="group" aria-label="Métrica semanal" style="display:none"><button data-wm="abs" aria-pressed="true">Seguidores</button><button data-wm="pct" aria-pressed="false">Variación %</button></div>
+      <div class="seg" id="wrSeg" role="group" aria-label="Rango de tiempo" style="display:none"><button data-wr="3" aria-pressed="false">3 meses</button><button data-wr="6" aria-pressed="true">6 meses</button><button data-wr="12" aria-pressed="false">1 año</button><button data-wr="0" aria-pressed="false">Todo</button></div>
+    </div>
     <div class="grid4" id="netCards"></div>
   </section>
 
@@ -271,49 +279,212 @@ footer b{color:var(--ink2)}
 <div id="tip" role="tooltip"></div>
 
 <!-- Datos de respaldo (snapshot). Se usan si no hay Google Sheet configurado ni archivos /data. -->
-<script type="text/csv" id="seed-cuentas">fecha,ticketera,red,usuario,url,seguidores,publicaciones,me_gusta_totales,hablando_de_esto
-2026-10-27,Joinnus,Instagram,@joinnus,https://www.instagram.com/joinnus/,556000,9988,,
-2026-10-27,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,166300,1631,2000000,
-2026-10-27,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353267,,,5675
-2026-10-27,Joinnus,YouTube,@joinnus,https://www.youtube.com/@joinnus,8110,1790,,
-2026-10-27,Teleticket,Instagram,@teleticket.oficial,https://www.instagram.com/teleticket.oficial/,687000,12000,,
-2026-10-27,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279600,1012,4700000,
-2026-10-27,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,724808,,,24836
-2026-10-27,Ticketmaster Perú,Instagram,@ticketmasterpe,https://www.instagram.com/ticketmasterpe/,231000,8676,,
-2026-10-27,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,100300,1082,1900000,
-2026-10-27,Ticketmaster Perú,Facebook,TicketmasterPE,https://www.facebook.com/TicketmasterPE,73634,,,11254
-2026-10-27,Ticketmaster Perú,YouTube,@TicketmasterPE,https://www.youtube.com/@TicketmasterPE,1340,103,,
-2026-10-27,Vaope,Instagram,@vaope.oficial,https://www.instagram.com/vaope.oficial/,69000,17000,,
-2026-10-27,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,468000,14600,9700000,
-2026-10-27,Vaope,Facebook,Vaopeee,https://www.facebook.com/Vaopeee/,318417,,,26127
-2026-10-27,Vaope,YouTube,@vaope.oficial,https://www.youtube.com/@vaope.oficial,540,70,,
-2026-10-27,Passline Perú,Instagram,@passline.pe,https://www.instagram.com/passline.pe/,43000,3107,,
-2026-10-27,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3014,204,24400,
-2026-10-27,Passline Perú,Facebook,passline.pe,https://www.facebook.com/passline.pe,1313,,,125
-2026-10-27,Blicket,Instagram,@blicket.events,https://www.instagram.com/blicket.events/,16000,238,,
-2026-10-27,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1631,135,65900,
-2026-10-27,Blicket,Facebook,blicket.events,https://www.facebook.com/blicket.events,1005,,,28
-2026-10-27,Joinnus,Instagram,@joinnus,https://www.instagram.com/joinnus/,556000,9999,,
-2026-10-27,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,166300,1632,2000000,
-2026-10-27,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353271,,,5675
-2026-10-27,Joinnus,YouTube,@joinnus,https://www.youtube.com/@joinnus,8110,1790,,
-2026-10-27,Teleticket,Instagram,@teleticket.oficial,https://www.instagram.com/teleticket.oficial/,687000,12000,,
-2026-10-27,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279600,1012,4700000,
-2026-10-27,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,724818,,,24836
-2026-10-27,Ticketmaster Perú,Instagram,@ticketmasterpe,https://www.instagram.com/ticketmasterpe/,231000,8678,,
-2026-10-27,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,100300,1082,1900000,
-2026-10-27,Ticketmaster Perú,Facebook,TicketmasterPE,https://www.facebook.com/TicketmasterPE,73642,,,11254
-2026-10-27,Ticketmaster Perú,YouTube,@TicketmasterPE,https://www.youtube.com/@TicketmasterPE,1340,103,,
-2026-10-27,Vaope,Instagram,@vaope.oficial,https://www.instagram.com/vaope.oficial/,69000,17000,,
-2026-10-27,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,468000,14600,9700000,
-2026-10-27,Vaope,Facebook,Vaopeee,https://www.facebook.com/Vaopeee/,318424,,,26127
-2026-10-27,Vaope,YouTube,@vaope.oficial,https://www.youtube.com/@vaope.oficial,540,70,,
-2026-10-27,Passline Perú,Instagram,@passline.pe,https://www.instagram.com/passline.pe/,43000,3113,,
-2026-10-27,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3014,204,24400,
-2026-10-27,Passline Perú,Facebook,passline.pe,https://www.facebook.com/passline.pe,1313,,,125
-2026-10-27,Blicket,Instagram,@blicket.events,https://www.instagram.com/blicket.events/,16000,238,,
-2026-10-27,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1632,135,65900,
-2026-10-27,Blicket,Facebook,blicket.events,https://www.facebook.com/blicket.events,1005,,,28
+<script type="text/csv" id="seed-cuentas">fecha,ticketera,red,usuario,url,seguidores,publicaciones,me_gusta_totales,hablando_de_esto,fuente
+2026-10-27,Joinnus,Instagram,@joinnus,https://www.instagram.com/joinnus/,556000,9988,,,
+2026-10-27,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,166300,1631,2000000,,
+2026-10-27,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353267,,,5675,
+2026-10-27,Joinnus,YouTube,@joinnus,https://www.youtube.com/@joinnus,8110,1790,,,
+2026-10-27,Teleticket,Instagram,@teleticket.oficial,https://www.instagram.com/teleticket.oficial/,687000,12000,,,
+2026-10-27,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279600,1012,4700000,,
+2026-10-27,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,724808,,,24836,
+2026-10-27,Ticketmaster Perú,Instagram,@ticketmasterpe,https://www.instagram.com/ticketmasterpe/,231000,8676,,,
+2026-10-27,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,100300,1082,1900000,,
+2026-10-27,Ticketmaster Perú,Facebook,TicketmasterPE,https://www.facebook.com/TicketmasterPE,73634,,,11254,
+2026-10-27,Ticketmaster Perú,YouTube,@TicketmasterPE,https://www.youtube.com/@TicketmasterPE,1340,103,,,
+2026-10-27,Vaope,Instagram,@vaope.oficial,https://www.instagram.com/vaope.oficial/,69000,17000,,,
+2026-10-27,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,468000,14600,9700000,,
+2026-10-27,Vaope,Facebook,Vaopeee,https://www.facebook.com/Vaopeee/,318417,,,26127,
+2026-10-27,Vaope,YouTube,@vaope.oficial,https://www.youtube.com/@vaope.oficial,540,70,,,
+2026-10-27,Passline Perú,Instagram,@passline.pe,https://www.instagram.com/passline.pe/,43000,3107,,,
+2026-10-27,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3014,204,24400,,
+2026-10-27,Passline Perú,Facebook,passline.pe,https://www.facebook.com/passline.pe,1313,,,125,
+2026-10-27,Blicket,Instagram,@blicket.events,https://www.instagram.com/blicket.events/,16000,238,,,
+2026-10-27,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1631,135,65900,,
+2026-10-27,Blicket,Facebook,blicket.events,https://www.facebook.com/blicket.events,1005,,,28,
+2026-10-27,Joinnus,Instagram,@joinnus,https://www.instagram.com/joinnus/,556000,9999,,,
+2026-10-27,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,166300,1632,2000000,,
+2026-10-27,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353271,,,5675,
+2026-10-27,Joinnus,YouTube,@joinnus,https://www.youtube.com/@joinnus,8110,1790,,,
+2026-10-27,Teleticket,Instagram,@teleticket.oficial,https://www.instagram.com/teleticket.oficial/,687000,12000,,,
+2026-10-27,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279600,1012,4700000,,
+2026-10-27,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,724818,,,24836,
+2026-10-27,Ticketmaster Perú,Instagram,@ticketmasterpe,https://www.instagram.com/ticketmasterpe/,231000,8678,,,
+2026-10-27,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,100300,1082,1900000,,
+2026-10-27,Ticketmaster Perú,Facebook,TicketmasterPE,https://www.facebook.com/TicketmasterPE,73642,,,11254,
+2026-10-27,Ticketmaster Perú,YouTube,@TicketmasterPE,https://www.youtube.com/@TicketmasterPE,1340,103,,,
+2026-10-27,Vaope,Instagram,@vaope.oficial,https://www.instagram.com/vaope.oficial/,69000,17000,,,
+2026-10-27,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,468000,14600,9700000,,
+2026-10-27,Vaope,Facebook,Vaopeee,https://www.facebook.com/Vaopeee/,318424,,,26127,
+2026-10-27,Vaope,YouTube,@vaope.oficial,https://www.youtube.com/@vaope.oficial,540,70,,,
+2026-10-27,Passline Perú,Instagram,@passline.pe,https://www.instagram.com/passline.pe/,43000,3113,,,
+2026-10-27,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3014,204,24400,,
+2026-10-27,Passline Perú,Facebook,passline.pe,https://www.facebook.com/passline.pe,1313,,,125,
+2026-10-27,Blicket,Instagram,@blicket.events,https://www.instagram.com/blicket.events/,16000,238,,,
+2026-10-27,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1632,135,65900,,
+2026-10-27,Blicket,Facebook,blicket.events,https://www.facebook.com/blicket.events,1005,,,28,
+2025-08-31,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,346880,,,,Social Blade (estimado)
+2025-09-30,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,347689,,,,Social Blade (estimado)
+2025-10-31,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,348186,,,,Social Blade (estimado)
+2025-11-30,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,350022,,,,Social Blade (estimado)
+2025-12-31,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,350528,,,,Social Blade (estimado)
+2026-01-31,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,351484,,,,Social Blade (estimado)
+2026-02-28,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,352161,,,,Social Blade (estimado)
+2026-03-31,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,352678,,,,Social Blade (estimado)
+2026-04-30,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353007,,,,Social Blade (estimado)
+2026-05-31,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,352887,,,,Social Blade (estimado)
+2026-06-30,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,352755,,,,Social Blade (estimado)
+2026-07-31,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,352770,,,,Social Blade (estimado)
+2026-08-31,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,352844,,,,Social Blade (estimado)
+2026-09-13,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,352995,,,,Social Blade (estimado)
+2026-09-20,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353016,,,,Social Blade (estimado)
+2026-09-27,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353038,,,,Social Blade (estimado)
+2026-09-30,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353045,,,,Social Blade (estimado)
+2026-10-04,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353019,,,,Social Blade (estimado)
+2026-10-09,Joinnus,Facebook,Joinnus,https://www.facebook.com/joinnus,353044,,,,Social Blade (estimado)
+2025-09-30,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,696594,,,,Social Blade (estimado)
+2025-10-31,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,698605,,,,Social Blade (estimado)
+2025-11-30,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,700596,,,,Social Blade (estimado)
+2025-12-31,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,700973,,,,Social Blade (estimado)
+2026-01-31,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,702245,,,,Social Blade (estimado)
+2026-02-28,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,705765,,,,Social Blade (estimado)
+2026-03-31,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,707274,,,,Social Blade (estimado)
+2026-04-30,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,708786,,,,Social Blade (estimado)
+2026-05-31,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,710953,,,,Social Blade (estimado)
+2026-06-30,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,711776,,,,Social Blade (estimado)
+2026-07-31,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,714320,,,,Social Blade (estimado)
+2026-08-31,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,719773,,,,Social Blade (estimado)
+2026-09-06,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,720021,,,,Social Blade (estimado)
+2026-09-13,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,720369,,,,Social Blade (estimado)
+2026-09-20,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,721457,,,,Social Blade (estimado)
+2026-09-27,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,722364,,,,Social Blade (estimado)
+2026-09-30,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,722974,,,,Social Blade (estimado)
+2026-10-03,Teleticket,Facebook,teleticket,https://www.facebook.com/teleticket,723071,,,,Social Blade (estimado)
+2026-04-30,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1487,,,,Social Blade (estimado)
+2026-05-31,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1563,,,,Social Blade (estimado)
+2026-06-30,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1572,,,,Social Blade (estimado)
+2026-07-31,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1569,,,,Social Blade (estimado)
+2026-08-31,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1598,,,,Social Blade (estimado)
+2026-09-30,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1603,,,,Social Blade (estimado)
+2026-10-04,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1606,,,,Social Blade (estimado)
+2026-10-11,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1622,,,,Social Blade (estimado)
+2026-10-18,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1630,,,,Social Blade (estimado)
+2026-10-25,Blicket,TikTok,@blicket.events,https://www.tiktok.com/@blicket.events,1633,,,,Social Blade (estimado)
+2024-08-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,46600,,,,Social Blade (estimado)
+2024-09-30,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,50700,,,,Social Blade (estimado)
+2024-11-30,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,55000,,,,Social Blade (estimado)
+2024-12-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,57200,,,,Social Blade (estimado)
+2025-01-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,64300,,,,Social Blade (estimado)
+2025-02-28,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,68700,,,,Social Blade (estimado)
+2025-03-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,73900,,,,Social Blade (estimado)
+2025-04-30,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,77600,,,,Social Blade (estimado)
+2025-05-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,84800,,,,Social Blade (estimado)
+2025-06-30,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,86100,,,,Social Blade (estimado)
+2025-07-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,87300,,,,Social Blade (estimado)
+2025-08-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,88600,,,,Social Blade (estimado)
+2025-09-30,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,90000,,,,Social Blade (estimado)
+2025-10-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,101000,,,,Social Blade (estimado)
+2025-11-30,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,107000,,,,Social Blade (estimado)
+2025-12-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,112400,,,,Social Blade (estimado)
+2026-01-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,119600,,,,Social Blade (estimado)
+2026-02-28,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,122800,,,,Social Blade (estimado)
+2026-03-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,130500,,,,Social Blade (estimado)
+2026-04-30,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,137300,,,,Social Blade (estimado)
+2026-05-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,150800,,,,Social Blade (estimado)
+2026-06-30,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,154000,,,,Social Blade (estimado)
+2026-07-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,157700,,,,Social Blade (estimado)
+2026-08-31,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,162200,,,,Social Blade (estimado)
+2026-09-27,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,164600,,,,Social Blade (estimado)
+2026-09-30,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,164700,,,,Social Blade (estimado)
+2026-10-04,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,165000,,,,Social Blade (estimado)
+2026-10-11,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,165400,,,,Social Blade (estimado)
+2026-10-18,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,165600,,,,Social Blade (estimado)
+2026-10-25,Joinnus,TikTok,@joinnus.com,https://www.tiktok.com/@joinnus.com,166200,,,,Social Blade (estimado)
+2026-04-30,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,2917,,,,Social Blade (estimado)
+2026-05-31,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,2926,,,,Social Blade (estimado)
+2026-06-30,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,2981,,,,Social Blade (estimado)
+2026-07-31,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,2997,,,,Social Blade (estimado)
+2026-08-31,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3012,,,,Social Blade (estimado)
+2026-09-27,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3012,,,,Social Blade (estimado)
+2026-09-30,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3007,,,,Social Blade (estimado)
+2026-10-04,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3009,,,,Social Blade (estimado)
+2026-10-11,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3013,,,,Social Blade (estimado)
+2026-10-18,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3015,,,,Social Blade (estimado)
+2026-10-25,Passline Perú,TikTok,@passline.pe,https://www.tiktok.com/@passline.pe,3013,,,,Social Blade (estimado)
+2024-01-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,192700,,,,Social Blade (estimado)
+2024-02-29,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,195900,,,,Social Blade (estimado)
+2024-03-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,196400,,,,Social Blade (estimado)
+2024-04-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,200100,,,,Social Blade (estimado)
+2024-05-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,202900,,,,Social Blade (estimado)
+2024-06-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,203400,,,,Social Blade (estimado)
+2024-07-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,204100,,,,Social Blade (estimado)
+2024-08-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,205400,,,,Social Blade (estimado)
+2024-09-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,205800,,,,Social Blade (estimado)
+2024-10-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,209900,,,,Social Blade (estimado)
+2024-11-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,212000,,,,Social Blade (estimado)
+2024-12-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,213200,,,,Social Blade (estimado)
+2025-01-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,214300,,,,Social Blade (estimado)
+2025-02-28,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,215700,,,,Social Blade (estimado)
+2025-03-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,216300,,,,Social Blade (estimado)
+2025-04-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,216700,,,,Social Blade (estimado)
+2025-05-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,217500,,,,Social Blade (estimado)
+2025-06-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,223900,,,,Social Blade (estimado)
+2025-07-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,233500,,,,Social Blade (estimado)
+2025-08-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,239500,,,,Social Blade (estimado)
+2025-09-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,244700,,,,Social Blade (estimado)
+2025-10-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,248600,,,,Social Blade (estimado)
+2025-11-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,252000,,,,Social Blade (estimado)
+2025-12-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,254200,,,,Social Blade (estimado)
+2026-01-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,256300,,,,Social Blade (estimado)
+2026-02-28,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,259500,,,,Social Blade (estimado)
+2026-03-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,262500,,,,Social Blade (estimado)
+2026-04-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,265200,,,,Social Blade (estimado)
+2026-05-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,268100,,,,Social Blade (estimado)
+2026-06-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,270400,,,,Social Blade (estimado)
+2026-07-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,273600,,,,Social Blade (estimado)
+2026-08-31,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,278200,,,,Social Blade (estimado)
+2026-09-27,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279000,,,,Social Blade (estimado)
+2026-09-30,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279000,,,,Social Blade (estimado)
+2026-10-04,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279100,,,,Social Blade (estimado)
+2026-10-11,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279400,,,,Social Blade (estimado)
+2026-10-18,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279500,,,,Social Blade (estimado)
+2026-10-25,Teleticket,TikTok,@teleticket,https://www.tiktok.com/@teleticket,279500,,,,Social Blade (estimado)
+2024-09-30,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,14000,,,,Social Blade (estimado)
+2024-11-30,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,23400,,,,Social Blade (estimado)
+2024-12-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,23400,,,,Social Blade (estimado)
+2025-01-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,23800,,,,Social Blade (estimado)
+2025-02-28,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,29900,,,,Social Blade (estimado)
+2025-03-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,33500,,,,Social Blade (estimado)
+2025-04-30,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,34500,,,,Social Blade (estimado)
+2025-05-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,42600,,,,Social Blade (estimado)
+2025-06-30,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,53200,,,,Social Blade (estimado)
+2025-07-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,54400,,,,Social Blade (estimado)
+2025-08-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,54800,,,,Social Blade (estimado)
+2025-09-30,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,56100,,,,Social Blade (estimado)
+2025-10-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,57000,,,,Social Blade (estimado)
+2025-11-30,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,58300,,,,Social Blade (estimado)
+2025-12-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,60500,,,,Social Blade (estimado)
+2026-01-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,82100,,,,Social Blade (estimado)
+2026-02-28,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,85300,,,,Social Blade (estimado)
+2026-03-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,92900,,,,Social Blade (estimado)
+2026-04-30,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,98300,,,,Social Blade (estimado)
+2026-05-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,98400,,,,Social Blade (estimado)
+2026-06-30,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,98200,,,,Social Blade (estimado)
+2026-08-31,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,98800,,,,Social Blade (estimado)
+2026-09-27,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,98900,,,,Social Blade (estimado)
+2026-09-30,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,98600,,,,Social Blade (estimado)
+2026-10-04,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,98700,,,,Social Blade (estimado)
+2026-10-11,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,99000,,,,Social Blade (estimado)
+2026-10-18,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,99600,,,,Social Blade (estimado)
+2026-10-25,Ticketmaster Perú,TikTok,@ticketmasterpe,https://www.tiktok.com/@ticketmasterpe,99900,,,,Social Blade (estimado)
+2026-04-30,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,433300,,,,Social Blade (estimado)
+2026-05-31,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,442700,,,,Social Blade (estimado)
+2026-06-30,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,453500,,,,Social Blade (estimado)
+2026-09-26,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,465300,,,,Social Blade (estimado)
+2026-09-30,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,464600,,,,Social Blade (estimado)
+2026-10-04,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,464800,,,,Social Blade (estimado)
+2026-10-11,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,465000,,,,Social Blade (estimado)
+2026-10-18,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,465800,,,,Social Blade (estimado)
+2026-10-25,Vaope,TikTok,@vaope.com,https://www.tiktok.com/@vaope.com,467000,,,,Social Blade (estimado)
 </script>
 <script type="text/csv" id="seed-posts">fecha,ticketera,red,url,tipo,likes,comentarios,texto,imagen
 2026-10-27,Joinnus,Web / multicanal,https://www.joinnus.com,Campaña (manual),,,"SORTEO OCTUBRE · Este octubre gánate un iPhone 18 Pro Max 512 GB o un Segway MAX G3. Y si compras entradas, duplicas tus opciones. S/3.90 por opción. ¡Participa ahora! *Aplican T&Cs. Ver en BlogJoinnus.",assets/sorteo-octubre-joinnus.jpg
@@ -441,7 +612,7 @@ function parseCSV(text){
 }
 
 let DB={accounts:[],posts:[],history:[],source:"",loadedAt:null};
-const S={ents:new Set(), net:"Todas", camp:null, campEnt:null, q:"", sort:"inter", sortSS:{k:"medInter",dir:-1}, histNet:"Instagram", feedN:12, fresh:true, A:null, B:null, C:""};
+const S={ents:new Set(), net:"Todas", camp:null, campEnt:null, q:"", sort:"inter", sortSS:{k:"medInter",dir:-1}, histNet:"Instagram", feedN:12, fresh:true, nv:"now", wm:"abs", wr:6, A:null, B:null, C:""};
 let ENT_LIST=[], COLOR_OF={};
 
 async function fetchText(url){ const r=await fetch(url+(url.includes("?")?"&":"?")+"t="+Date.now(),{cache:"no-store"}); if(!r.ok) throw new Error(r.status); return r.text(); }
@@ -453,7 +624,7 @@ async function load(){
   }catch(e){ console.warn("Sheet no disponible",e); }
   if(!c){ try{ c=await fetchText("data/cuentas.csv"); p=await fetchText("data/posts.csv"); src="repo"; }catch(e){} }
   if(!c){ c=document.getElementById("seed-cuentas").textContent; p=document.getElementById("seed-posts").textContent; src="seed"; }
-  const acc=parseCSV(c.trim()).map(r=>({fecha:r.fecha,ent:r.ticketera,net:r.red,user:r.usuario,url:r.url,fol:num(r.seguidores),pubs:num(r.publicaciones),hearts:num(r.me_gusta_totales),talk:num(r.hablando_de_esto)})).filter(r=>r.ent&&r.net);
+  const acc=parseCSV(c.trim()).map(r=>({fecha:r.fecha,ent:r.ticketera,net:r.red,user:r.usuario,url:r.url,fol:num(r.seguidores),pubs:num(r.publicaciones),hearts:num(r.me_gusta_totales),talk:num(r.hablando_de_esto),src:r.fuente||""})).filter(r=>r.ent&&r.net);
   const posts=parseCSV((p||"").trim()).map(r=>({fecha:r.fecha,ent:r.ticketera,net:r.red||"Instagram",url:r.url,tipo:r.tipo,likes:num(r.likes),com:num(r.comentarios),views:num(r.vistas),img:r.imagen||"",tx:r.texto||""})).filter(r=>r.ent);
   // último dato por ticketera+red, y el historial completo
   // Si una cuenta tiene 2 filas con la misma fecha, vale la última. Si un post (misma URL) aparece 2 veces, vale la última (métricas actualizadas).
@@ -546,16 +717,53 @@ function renderKPIs(){
   document.getElementById("kpis").innerHTML=k.map(x=>`<div class="kpi"><div class="v ${x.accent?"accent":""}">${x.v}</div><div class="l">${x.l}</div><div class="s">${x.s}</div></div>`).join("");
 }
 
+/* ---------- semanas ---------- */
+const weekStart = f => { const d=new Date(f+"T12:00:00"); const k=(d.getDay()+6)%7; d.setDate(d.getDate()-k); return d.toISOString().slice(0,10); };
+const weekLbl = w => new Date(w+"T12:00:00").toLocaleDateString("es-PE",{day:"numeric",month:"short"});
+// Serie semanal: última medición de cada semana (lunes a domingo)
+function weekly(e,n){ const m={}; DB.history.filter(r=>r.ent===e&&r.net===n&&r.fol!=null).sort((a,b)=>a.fecha.localeCompare(b.fecha)).forEach(r=>{ m[weekStart(r.fecha)]=r; }); return Object.entries(m).sort((a,b)=>a[0].localeCompare(b[0])).map(([w,r])=>({w,fol:r.fol,fecha:r.fecha,src:r.src})); }
+// Cambio vs. la semana anterior
+function wDelta(e,n){ const s=weekly(e,n); if(s.length<2) return null; const a=s[s.length-2], b=s[s.length-1]; return {abs:b.fol-a.fol, pct:a.fol?(b.fol-a.fol)/a.fol:null}; }
+const dTxt = d => d==null ? "" : (d.abs>0?"▲ +":d.abs<0?"▼ ":"= ")+fmt(Math.abs(d.abs))+(d.pct!=null?` (${d.pct>=0?"+":""}${(d.pct*100).toFixed(1).replace(".",",")}%)`:"");
+
+function weeklyChart(n,ents){
+  let series=ents.map(e=>({e,s:weekly(e,n)})).filter(x=>x.s.length);
+  const lastW=series.flatMap(x=>x.s.map(p=>p.w)).sort().pop();
+  if(S.wr&&lastW){ const c=new Date(lastW+"T12:00:00"); c.setMonth(c.getMonth()-S.wr); const cut=c.toISOString().slice(0,10); series=series.map(x=>({e:x.e,s:x.s.filter(p=>p.w>=cut)})).filter(x=>x.s.length); }
+  const weeks=[...new Set(series.flatMap(x=>x.s.map(p=>p.w)))].sort();
+  if(weeks.length<2) return `<div class="callout">Por ahora hay datos de <b>${weeks.length} semana</b>${weeks[0]?` (semana del ${weekLbl(weeks[0])})`:""} para esta red. La línea de tiempo aparece desde la segunda semana de mediciones.</div>`;
+  const pctMode=S.wm==="pct";
+  const val=(x,p)=>pctMode?(x.s[0].fol?(p.fol-x.s[0].fol)/x.s[0].fol*100:0):p.fol;
+  const all=series.flatMap(x=>x.s.map(p=>val(x,p)));
+  let lo=Math.min(...all), hi=Math.max(...all); if(!pctMode) lo=0; if(lo===hi){hi=lo+1;} const pad=(hi-lo)*0.08; if(pctMode){lo-=pad;} hi+=pad;
+  const W=560,H=230,pl=52,pr=26,pt=10,pb=26;
+  const t0=+new Date(weeks[0]), t1=+new Date(weeks[weeks.length-1]); const X=w=>pl+((+new Date(w))-t0)/(t1-t0)*(W-pl-pr), Y=v=>pt+(1-(v-lo)/(hi-lo))*(H-pt-pb);
+  const ft=v=>pctMode?(v>=0?"+":"")+v.toFixed(1).replace(".",",")+"%":fmt(v);
+  let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Evolución semanal de seguidores en ${n}">`;
+  [0,.25,.5,.75,1].forEach(t=>{const v=lo+t*(hi-lo); g+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="rgba(255,255,255,.07)"/><text x="${pl-8}" y="${Y(v)+4}" fill="#7f93a5" font-size="11" text-anchor="end">${ft(v)}</text>`;});
+  if(pctMode&&lo<0&&hi>0) g+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(0)}" y2="${Y(0)}" stroke="rgba(255,255,255,.25)"/>`;
+  const span=(t1-t0)/864e5; const nT=6; for(let i=0;i<=nT;i++){ const d=new Date(t0+(t1-t0)*i/nT); const lb=span>200?d.toLocaleDateString("es-PE",{month:"short",year:"2-digit"}):d.toLocaleDateString("es-PE",{day:"numeric",month:"short"}); g+=`<text x="${pl+(W-pl-pr)*i/nT}" y="${H-8}" fill="#7f93a5" font-size="11" text-anchor="${i===0?"start":i===nT?"end":"middle"}">${lb}</text>`; }
+  series.forEach(x=>{ const me=isMe(x.e);
+    g+=`<polyline fill="none" stroke="${COLOR_OF[x.e]}" stroke-width="${me?3:2}" stroke-linejoin="round" stroke-linecap="round" points="${x.s.map(p=>X(p.w)+","+Y(val(x,p))).join(" ")}"/>`;
+    x.s.forEach((p,i)=>{ const prev=x.s[i-1]; const ch=prev?p.fol-prev.fol:null;
+      const est=/social blade/i.test(p.src||""); const r_=x.s.length>40?2.5:4;
+      g+=`<circle cx="${X(p.w)}" cy="${Y(val(x,p))}" r="${r_}" fill="${est?"#0d2334":COLOR_OF[x.e]}" stroke="${est?COLOR_OF[x.e]:"#0d2334"}" stroke-width="${est?1.5:2}"/><circle cx="${X(p.w)}" cy="${Y(val(x,p))}" r="10" fill="transparent" data-tip="<b>${esc(x.e)}</b> · ${n}<br>Semana del ${weekLbl(p.w)} (dato del ${p.fecha})<br>${fmtFull(p.fol)} seguidores${ch!=null?`<br><span class=m>${ch>=0?"+":""}${fmtFull(ch)} vs. punto anterior</span>`:""}${est?`<br><span class=m>Fuente: Social Blade (estimado)</span>`:""}"/>`; });
+  });
+  return `<div class="frow" style="gap:6px 14px;font-size:12px;color:var(--ink2);margin-bottom:6px">${series.map(x=>`<span style="display:inline-flex;align-items:center;gap:6px;${isMe(x.e)?"font-weight:700;color:var(--ink)":""}">${sw(x.e)}${esc(x.e)}</span>`).join("")}</div>`+g+`</svg><p class="note">Puntos huecos = historia estimada desde Social Blade (mensual hasta septiembre 2026, semanal en octubre). Puntos llenos = mediciones propias.</p>`+(pctMode?`<p class="note">Variación % = cuánto creció cada cuenta desde su primera semana medida. Sirve para comparar ritmos de crecimiento entre cuentas de distinto tamaño.</p>`:"");
+}
+
 function renderNetCards(){
   const ents=sel();
   document.getElementById("netCards").style.gridTemplateColumns=S.net==="Todas"?"":"1fr";
   document.getElementById("netCards").innerHTML=netsSel().map(n=>{
     const items=ents.map(e=>({e,a:acct(e,n)})).filter(x=>x.a&&x.a.fol!=null).sort((x,y)=>y.a.fol-x.a.fol)
-      .map(x=>({e:x.e,v:x.a.fol,a:x.a,tip:`<b>${esc(x.e)}</b> · ${n}<br>${esc(x.a.user||"")}<br>${fmtFull(x.a.fol)} seguidores`+(x.a.pubs?`<br><span class=m>${fmtFull(x.a.pubs)} publicaciones</span>`:"")+(x.a.hearts?`<br><span class=m>${fmt(x.a.hearts)} me gusta totales</span>`:"")+(x.a.talk?`<br><span class=m>${fmtFull(x.a.talk)} hablando de esto</span>`:"")}));
+      .map(x=>{ const d=wDelta(x.e,n); return {e:x.e,v:x.a.fol,a:x.a,d,tip:`<b>${esc(x.e)}</b> · ${n}<br>${esc(x.a.user||"")}<br>${fmtFull(x.a.fol)} seguidores`+(d?`<br>${dTxt(d)} vs. semana anterior`:"")+(x.a.pubs?`<br><span class=m>${fmtFull(x.a.pubs)} publicaciones</span>`:"")+(x.a.hearts?`<br><span class=m>${fmt(x.a.hearts)} me gusta totales</span>`:"")+(x.a.talk?`<br><span class=m>${fmtFull(x.a.talk)} hablando de esto</span>`:"")}; });
     const missing=ents.filter(e=>!acct(e,n)?.fol);
     const sum=items.reduce((s,i)=>s+i.v,0);
-    return `<div class="card"><h3>${n}<small>${fmt(sum)} en total</small></h3><p class="sub">${items.length} cuentas${missing.length?` · sin cuenta encontrada: ${missing.map(esc).join(", ")}`:""}</p>
-      <div class="bars">${barList(items,{sub:i=>` <span>· ${pct(i.v/sum,0)}</span>`})}</div></div>`;
+    const anyD=items.some(i=>i.d);
+    const body=S.nv==="week" ? weeklyChart(n,items.map(i=>i.e)) :
+      `<div class="bars">${barList(items,{sub:i=>` <span>· ${pct(i.v/sum,0)}</span>`+(i.d?`<div class="wd">${dTxt(i.d)} <span>sem.</span></div>`:"")})}</div>`+(anyD?"":`<p class="note">El cambio vs. la semana anterior aparece desde la segunda semana de mediciones.</p>`);
+    return `<div class="card"><h3>${n}<small>${fmt(sum)} en total</small></h3><p class="sub">${items.length} cuentas${missing.length?` · sin cuenta encontrada: ${missing.map(esc).join(", ")}`:""}</p>${body}</div>`;
   }).join("");
 }
 
@@ -676,17 +884,20 @@ function renderHist(){
   const dates=[...new Set(H.map(r=>r.fecha))].sort();
   const el=document.getElementById("hist");
   if(dates.length<2){ el.innerHTML=`<div class="callout">Por ahora hay <b>${dates.length} fecha</b> registrada (${dates[0]||"—"}). Cuando el equipo sume una nueva medición en la hoja “cuentas” (recomendado: cada lunes), aquí verás la curva de crecimiento y la ganancia de seguidores por semana.</div>`; return; }
-  const W=1000,Hh=280,pl=56,pr=110,pt=12,pb=28; const x=d=>pl+(dates.indexOf(d)/(dates.length-1))*(W-pl-pr);
+  const W=1000,Hh=280,pl=56,pr=150,pt=12,pb=28; const ta=+new Date(dates[0]), tb=+new Date(dates[dates.length-1]); const x=d=>pl+((+new Date(d))-ta)/(tb-ta)*(W-pl-pr);
   const max=Math.max(...H.map(r=>r.fol))*1.05; const y=v=>pt+(1-v/max)*(Hh-pt-pb);
   const ticks=[0,.25,.5,.75,1].map(t=>t*max);
   let svg=`<svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="Evolución de seguidores en ${S.histNet}">`;
   svg+=ticks.map(t=>`<line x1="${pl}" x2="${W-pr}" y1="${y(t)}" y2="${y(t)}" stroke="rgba(255,255,255,.07)"/><text x="${pl-8}" y="${y(t)+4}" fill="#7f93a5" font-size="11" text-anchor="end">${fmt(t)}</text>`).join("");
-  svg+=dates.map(d=>`<text x="${x(d)}" y="${Hh-8}" fill="#7f93a5" font-size="11" text-anchor="middle">${d.slice(5)}</text>`).join("");
+  for(let i=0;i<=6;i++){ const d=new Date(ta+(tb-ta)*i/6); const lb=(tb-ta)/864e5>200?d.toLocaleDateString("es-PE",{month:"short",year:"2-digit"}):d.toLocaleDateString("es-PE",{day:"numeric",month:"short"}); svg+=`<text x="${pl+(W-pl-pr)*i/6}" y="${Hh-8}" fill="#7f93a5" font-size="11" text-anchor="middle">${lb}</text>`; }
+  const LBL=[];
   ents.forEach(e=>{ const pts=dates.map(d=>H.find(r=>r.ent===e&&r.fecha===d)).filter(Boolean); if(!pts.length) return;
     svg+=`<polyline fill="none" stroke="${COLOR_OF[e]}" stroke-width="${isMe(e)?3:2}" points="${pts.map(r=>x(r.fecha)+","+y(r.fol)).join(" ")}"/>`;
     const last=pts[pts.length-1], first=pts[0];
-    svg+=pts.map(r=>`<circle cx="${x(r.fecha)}" cy="${y(r.fol)}" r="4" fill="${COLOR_OF[e]}" stroke="#081b2c" stroke-width="2"/><circle cx="${x(r.fecha)}" cy="${y(r.fol)}" r="12" fill="transparent" data-tip="<b>${esc(e)}</b> · ${r.fecha}<br>${fmtFull(r.fol)} seguidores"/>`).join("");
-    svg+=`<text x="${x(last.fecha)+8}" y="${y(last.fol)+4}" fill="#b9c7d3" font-size="11">${esc(e)} ${last.fol>=first.fol?"+":""}${fmt(last.fol-first.fol)}</text>`; });
+    svg+=pts.map(r=>`<circle cx="${x(r.fecha)}" cy="${y(r.fol)}" r="${pts.length>40?2.5:4}" fill="${COLOR_OF[e]}" stroke="#081b2c" stroke-width="2"/><circle cx="${x(r.fecha)}" cy="${y(r.fol)}" r="12" fill="transparent" data-tip="<b>${esc(e)}</b> · ${r.fecha}<br>${fmtFull(r.fol)} seguidores"/>`).join("");
+    LBL.push({x:x(last.fecha)+8,y:y(last.fol)+4,t:`${esc(e)} ${last.fol>=first.fol?"+":""}${fmt(last.fol-first.fol)}`}); });
+  LBL.sort((a,b)=>a.y-b.y); for(let i=1;i<LBL.length;i++) if(LBL[i].y-LBL[i-1].y<13) LBL[i].y=LBL[i-1].y+13;
+  svg+=LBL.map(l=>`<text x="${l.x}" y="${l.y}" fill="#b9c7d3" font-size="11">${l.t}</text>`).join("");
   el.innerHTML=svg+"</svg>";
 }
 
@@ -705,6 +916,9 @@ document.addEventListener("click",e=>{
   else if(t.dataset.camp){ const same=S.camp===t.dataset.camp&&S.campEnt===t.dataset.cent; S.camp=same?null:t.dataset.camp; S.campEnt=same?null:t.dataset.cent; render(); document.getElementById("feed").scrollIntoView({behavior:"smooth",block:"start"}); return; }
   else if(t.dataset.hash){ S.camp=S.camp===t.dataset.hash?null:t.dataset.hash; S.campEnt=null; }
   else if(t.dataset.sort){ S.sort=t.dataset.sort; document.querySelectorAll("[data-sort]").forEach(b=>b.setAttribute("aria-pressed",b===t)); renderFeed(); return; }
+  else if(t.dataset.nv){ S.nv=t.dataset.nv; document.querySelectorAll("[data-nv]").forEach(b=>b.setAttribute("aria-pressed",b===t)); document.getElementById("wmSeg").style.display=document.getElementById("wrSeg").style.display=S.nv==="week"?"":"none"; renderNetCards(); return; }
+  else if(t.dataset.wr){ S.wr=+t.dataset.wr; document.querySelectorAll("[data-wr]").forEach(b=>b.setAttribute("aria-pressed",b===t)); renderNetCards(); return; }
+  else if(t.dataset.wm){ S.wm=t.dataset.wm; document.querySelectorAll("[data-wm]").forEach(b=>b.setAttribute("aria-pressed",b===t)); renderNetCards(); return; }
   else if(t.dataset.hn){ S.histNet=t.dataset.hn; renderHist(); return; }
   else if(t.dataset.sk){ S.sortSS={k:t.dataset.sk,dir:S.sortSS.k===t.dataset.sk?-S.sortSS.dir:-1}; renderSS(); return; }
   else if(t.id==="clearCamp"){ e.preventDefault(); S.camp=null; S.campEnt=null; }
